@@ -37,13 +37,22 @@ SpecificWorker::~SpecificWorker()
 bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 {
     // read laser's extrinsics and intrinsics
+    //front
     Eigen::Matrix3f front_rot;
     front_rot = Eigen::AngleAxisf(0.0, Eigen::Vector3f::UnitX())
                * Eigen::AngleAxisf(0.0, Eigen::Vector3f::UnitY())
                * Eigen::AngleAxisf(0.0, Eigen::Vector3f::UnitZ());
     front_extrinsics.translate(Eigen::Vector3f(0.0, 200, 0.0));
     front_extrinsics.rotate(front_rot);
-    std::cout << front_extrinsics.matrix() << std::endl;
+    std::cout << __FUNCTION__ << " front_extrinsics: " << front_extrinsics.matrix() << std::endl;
+    // back
+    Eigen::Matrix3f back_rot;
+    back_rot = Eigen::AngleAxisf(0.0, Eigen::Vector3f::UnitX())
+                * Eigen::AngleAxisf(0.0, Eigen::Vector3f::UnitY())
+                * Eigen::AngleAxisf(0.0, Eigen::Vector3f::UnitZ());
+    back_extrinsics.translate(Eigen::Vector3f(0.0, -200, 0.0)); // mm
+    back_extrinsics.rotate(back_rot);
+    std::cout << __FUNCTION__ << " back_extrinsics: " << back_extrinsics.matrix() << std::endl;
 	return true;
 }
 
@@ -52,14 +61,9 @@ void SpecificWorker::initialize(int period)
 	std::cout << "Initialize worker" << std::endl;
 	this->Period = period;
 	if(this->startup_check_flag)
-	{
 		this->startup_check();
-	}
 	else
-	{
 		timer.start(Period);
-	}
-
 }
 
 void SpecificWorker::compute()
@@ -106,7 +110,9 @@ RoboCompLaser::TLaserData SpecificWorker::merge(const std::map<std::string, Lase
             // convert to degrees and cast to int
             int degrees = (int)(new_angle * (180.0/M_PI));
             // insert in the corresponding bin the distance from the origin. Insertions are sorted
-            bins[degrees].emplace(new_vector.norm());
+            if(degrees >= 0 and degrees < 360)
+                bins[degrees].emplace(new_vector.norm());
+            else qWarning() << __FUNCTION__ << " Index out of bounds (0-360):" << degrees;
         }
     }
     // recover the first/minimum elements of each bien

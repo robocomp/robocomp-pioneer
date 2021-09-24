@@ -1,0 +1,12 @@
+import "DifferentialRobot.idsl";
+import "Laser.idsl";
+
+Component reelay_testzone
+{
+    Communications
+    {
+        requires DifferentialRobot, Laser;
+    };
+    language Cpp;
+};
+

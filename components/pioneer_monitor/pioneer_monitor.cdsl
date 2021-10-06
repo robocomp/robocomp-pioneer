@@ -1,0 +1,26 @@
+import "DifferentialRobot.idsl";
+import "JoystickAdapter.idsl";
+import "BatteryStatus.idsl";
+import "Ultrasound.idsl";
+import "RSSIStatus.idsl";
+import "FullPoseEstimation.idsl";
+import "FullPoseEstimationPub.idsl";
+import "GenericBase.idsl";
+import "GpsUblox.idsl";
+import "Laser.idsl";
+import "Radar.idsl";
+import "CameraSimple.idsl";
+import "MonitorBase.idsl";
+
+Component pioneer_monitor
+{
+    Communications
+    {
+        requires DifferentialRobot, JoystickAdapter, BatteryStatus, Ultrasound, RSSIStatus, FullPoseEstimation, FullPoseEstimation, FullPoseEstimationPub, FullPoseEstimationPub, GenericBase, GpsUblox, Laser, Laser, Laser, Radar, CameraSimple, MonitorBase, MonitorBase, MonitorBase, MonitorBase, MonitorBase, MonitorBase, MonitorBase, MonitorBase;
+	    implements DifferentialRobot;
+	    subscribesTo JoystickAdapter;
+
+   };
+    language Cpp11;
+};
+

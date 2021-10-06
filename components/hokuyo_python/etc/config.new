@@ -1,0 +1,19 @@
+# Endpoints for implements interfaces
+Laser.Endpoints=tcp -p 11485
+MonitorBase.Endpoints=tcp -p 16651
+
+
+# Proxies for required interfaces
+GenericBaseProxy = genericbase:tcp -h localhost -p 18714
+
+
+
+
+
+Ice.Warn.Connections=0
+Ice.Trace.Network=0
+Ice.Trace.Protocol=0
+Ice.MessageSizeMax=20004800
+
+
+

@@ -1,0 +1,20 @@
+# Endpoints for implements interfaces
+Laser.Endpoints=tcp -p 13935
+MonitorBase.Endpoints=tcp -p 13938
+
+
+# Proxies for required interfaces
+GenericBaseProxy = genericbase:tcp -h localhost -p 17800
+
+
+
+
+
+Ice.Warn.Connections=0
+Ice.Trace.Network=0
+Ice.Trace.Protocol=0
+Ice.MessageSizeMax=20004800
+
+
+uart_port=/dev/laser_back
+uart_speed = 115200

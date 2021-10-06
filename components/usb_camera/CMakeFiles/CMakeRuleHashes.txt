@@ -1,0 +1,5 @@
+# Hashes of file build rules.
+b5d63245b4ba055f072ba53e2523d69b src/CMakeFiles/usb_camera_autogen
+bf4c90cf5dd58aee2cde803f81e2a6fa src/CameraSimple.cpp
+867df47c3c7a422f81abecc733415bb4 src/CommonBehavior.cpp
+9a849e804982aa8c725e0aa18cc53d2d src/MonitorBase.cpp

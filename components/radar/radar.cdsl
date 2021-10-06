@@ -1,0 +1,12 @@
+import "Radar.idsl";
+import "MonitorBase.idsl";
+Component radar
+{
+    Communications
+    {
+        implements Radar, MonitorBase;
+    };
+    language python;
+    
+};
+

@@ -1,0 +1,85 @@
+/snap/clion/164/bin/cmake/linux/bin/cmake -DCMAKE_DEPENDS_USE_COMPILER=FALSE -G "CodeBlocks - Unix Makefiles" /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor
+CMake Deprecation Warning at CMakeLists.txt:1 (cmake_minimum_required):
+  Compatibility with CMake < 2.8.12 will be removed from a future version of
+  CMake.
+
+  Update the VERSION argument <min> value or use a ...<max> suffix to tell
+  CMake that the project does not need compatibility with older versions.
+
+
+CMake Warning at src/CMakeLists.txt:5 (MESSAGE):
+  ROBOCOMP variable not set.  Using the default value: /opt/robocomp
+
+
+-- COMPILING WITH QT5
+-- Ice version: 3.7.3
+-- Found the following Ice libraries:
+--   Ice++11 (required)
+--   IceStorm++11 (required)
+-- Found Ice: /usr/bin/slice2cpp (found version "3.7.3") 
+-- RoboComp root is now set to /opt/robocomp//
+-- 
+-- Ice version: 3.7.3
+-- Found the following Ice libraries:
+--   Ice (required)
+--   IceStorm (required)
+-- The following Ice libraries were not found:
+--   IceUtil (optional)
+-- Found Ice: /usr/bin/slice2cpp (found version "3.7.3") 
+-- BU Adding rule to generate /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/CommonBehavior.ice from /opt/robocomp//interfaces/IDSLs/CommonBehavior.idsl
+-- BU Adding rule to generate /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/BatteryStatus.ice from /opt/robocomp//interfaces/IDSLs/BatteryStatus.idsl
+-- BU Adding rule to generate /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/CameraSimple.ice from /opt/robocomp//interfaces/IDSLs/CameraSimple.idsl
+-- BU Adding rule to generate /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/DifferentialRobot.ice from /opt/robocomp//interfaces/IDSLs/DifferentialRobot.idsl
+-- BU Adding rule to generate /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/DifferentialRobot.ice from /opt/robocomp//interfaces/IDSLs/DifferentialRobot.idsl
+-- BU Adding rule to generate /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/FullPoseEstimation.ice from /opt/robocomp//interfaces/IDSLs/FullPoseEstimation.idsl
+-- BU Adding rule to generate /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/FullPoseEstimation.ice from /opt/robocomp//interfaces/IDSLs/FullPoseEstimation.idsl
+-- BU Adding rule to generate /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/FullPoseEstimationPub.ice from /opt/robocomp//interfaces/IDSLs/FullPoseEstimationPub.idsl
+-- BU Adding rule to generate /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/FullPoseEstimationPub.ice from /opt/robocomp//interfaces/IDSLs/FullPoseEstimationPub.idsl
+-- BU Adding rule to generate /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/GenericBase.ice from /opt/robocomp//interfaces/IDSLs/GenericBase.idsl
+-- BU Adding rule to generate /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/GpsUblox.ice from /opt/robocomp//interfaces/IDSLs/GpsUblox.idsl
+-- BU Adding rule to generate /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/JoystickAdapter.ice from /opt/robocomp//interfaces/IDSLs/JoystickAdapter.idsl
+-- BU Adding rule to generate /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/JoystickAdapter.ice from /opt/robocomp//interfaces/IDSLs/JoystickAdapter.idsl
+-- BU Adding rule to generate /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/Laser.ice from /opt/robocomp//interfaces/IDSLs/Laser.idsl
+-- BU Adding rule to generate /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/Laser.ice from /opt/robocomp//interfaces/IDSLs/Laser.idsl
+-- BU Adding rule to generate /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/Laser.ice from /opt/robocomp//interfaces/IDSLs/Laser.idsl
+-- BU Adding rule to generate /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/MonitorBase.ice from /opt/robocomp//interfaces/IDSLs/MonitorBase.idsl
+-- BU Adding rule to generate /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/MonitorBase.ice from /opt/robocomp//interfaces/IDSLs/MonitorBase.idsl
+-- BU Adding rule to generate /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/MonitorBase.ice from /opt/robocomp//interfaces/IDSLs/MonitorBase.idsl
+-- BU Adding rule to generate /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/MonitorBase.ice from /opt/robocomp//interfaces/IDSLs/MonitorBase.idsl
+-- BU Adding rule to generate /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/MonitorBase.ice from /opt/robocomp//interfaces/IDSLs/MonitorBase.idsl
+-- BU Adding rule to generate /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/MonitorBase.ice from /opt/robocomp//interfaces/IDSLs/MonitorBase.idsl
+-- BU Adding rule to generate /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/MonitorBase.ice from /opt/robocomp//interfaces/IDSLs/MonitorBase.idsl
+-- BU Adding rule to generate /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/MonitorBase.ice from /opt/robocomp//interfaces/IDSLs/MonitorBase.idsl
+-- BU Adding rule to generate /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/RSSIStatus.ice from /opt/robocomp//interfaces/IDSLs/RSSIStatus.idsl
+-- BU Adding rule to generate /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/Radar.ice from /opt/robocomp//interfaces/IDSLs/Radar.idsl
+-- BU Adding rule to generate /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/Ultrasound.ice from /opt/robocomp//interfaces/IDSLs/Ultrasound.idsl
+-- BU ice=>h/cpp: Adding rule to generate CommonBehavior.h and CommonBehavior.cpp from /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/CommonBehavior.ice
+-- BU ice=>h/cpp: Adding rule to generate BatteryStatus.h and BatteryStatus.cpp from /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/BatteryStatus.ice
+-- BU ice=>h/cpp: Adding rule to generate CameraSimple.h and CameraSimple.cpp from /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/CameraSimple.ice
+-- BU ice=>h/cpp: Adding rule to generate DifferentialRobot.h and DifferentialRobot.cpp from /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/DifferentialRobot.ice
+-- BU ice=>h/cpp: Adding rule to generate DifferentialRobot.h and DifferentialRobot.cpp from /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/DifferentialRobot.ice
+-- BU ice=>h/cpp: Adding rule to generate FullPoseEstimation.h and FullPoseEstimation.cpp from /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/FullPoseEstimation.ice
+-- BU ice=>h/cpp: Adding rule to generate FullPoseEstimation.h and FullPoseEstimation.cpp from /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/FullPoseEstimation.ice
+-- BU ice=>h/cpp: Adding rule to generate FullPoseEstimationPub.h and FullPoseEstimationPub.cpp from /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/FullPoseEstimationPub.ice
+-- BU ice=>h/cpp: Adding rule to generate FullPoseEstimationPub.h and FullPoseEstimationPub.cpp from /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/FullPoseEstimationPub.ice
+-- BU ice=>h/cpp: Adding rule to generate GenericBase.h and GenericBase.cpp from /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/GenericBase.ice
+-- BU ice=>h/cpp: Adding rule to generate GpsUblox.h and GpsUblox.cpp from /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/GpsUblox.ice
+-- BU ice=>h/cpp: Adding rule to generate JoystickAdapter.h and JoystickAdapter.cpp from /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/JoystickAdapter.ice
+-- BU ice=>h/cpp: Adding rule to generate JoystickAdapter.h and JoystickAdapter.cpp from /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/JoystickAdapter.ice
+-- BU ice=>h/cpp: Adding rule to generate Laser.h and Laser.cpp from /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/Laser.ice
+-- BU ice=>h/cpp: Adding rule to generate Laser.h and Laser.cpp from /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/Laser.ice
+-- BU ice=>h/cpp: Adding rule to generate Laser.h and Laser.cpp from /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/Laser.ice
+-- BU ice=>h/cpp: Adding rule to generate MonitorBase.h and MonitorBase.cpp from /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/MonitorBase.ice
+-- BU ice=>h/cpp: Adding rule to generate MonitorBase.h and MonitorBase.cpp from /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/MonitorBase.ice
+-- BU ice=>h/cpp: Adding rule to generate MonitorBase.h and MonitorBase.cpp from /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/MonitorBase.ice
+-- BU ice=>h/cpp: Adding rule to generate MonitorBase.h and MonitorBase.cpp from /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/MonitorBase.ice
+-- BU ice=>h/cpp: Adding rule to generate MonitorBase.h and MonitorBase.cpp from /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/MonitorBase.ice
+-- BU ice=>h/cpp: Adding rule to generate MonitorBase.h and MonitorBase.cpp from /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/MonitorBase.ice
+-- BU ice=>h/cpp: Adding rule to generate MonitorBase.h and MonitorBase.cpp from /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/MonitorBase.ice
+-- BU ice=>h/cpp: Adding rule to generate MonitorBase.h and MonitorBase.cpp from /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/MonitorBase.ice
+-- BU ice=>h/cpp: Adding rule to generate RSSIStatus.h and RSSIStatus.cpp from /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/RSSIStatus.ice
+-- BU ice=>h/cpp: Adding rule to generate Radar.h and Radar.cpp from /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/Radar.ice
+-- BU ice=>h/cpp: Adding rule to generate Ultrasound.h and Ultrasound.cpp from /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/Ultrasound.ice
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor

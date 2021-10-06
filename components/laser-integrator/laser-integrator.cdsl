@@ -1,0 +1,13 @@
+import "Laser.idsl";
+import "MonitorBase.idsl";
+
+Component laser_integrator
+{
+    Communications
+    {
+        implements Laser, MonitorBase;
+        requires Laser, Laser;
+    };
+    language Cpp11;
+};
+

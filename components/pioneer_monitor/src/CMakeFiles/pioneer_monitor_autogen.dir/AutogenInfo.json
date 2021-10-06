@@ -1,0 +1,212 @@
+{
+	"BUILD_DIR" : "/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/pioneer_monitor_autogen",
+	"CMAKE_BINARY_DIR" : "/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor",
+	"CMAKE_CURRENT_BINARY_DIR" : "/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src",
+	"CMAKE_CURRENT_SOURCE_DIR" : "/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src",
+	"CMAKE_EXECUTABLE" : "/usr/bin/cmake",
+	"CMAKE_SOURCE_DIR" : "/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor",
+	"HEADERS" : 
+	[
+		[
+			"/home/pioneernuc/robocomp/classes/qlog/qlog.h",
+			"MU",
+			"QRPMLXFUT3/moc_qlog.cpp"
+		],
+		[
+			"/home/pioneernuc/robocomp/classes/rapplication/rapplication.h",
+			"MU",
+			"XUEGC4IEEO/moc_rapplication.cpp"
+		],
+		[
+			"/home/pioneernuc/robocomp/classes/sigwatch/sigwatch.h",
+			"MU",
+			"HJONKALERN/moc_sigwatch.cpp"
+		],
+		[
+			"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/commonbehaviorI.h",
+			"MU",
+			"EWIEGA46WW/moc_commonbehaviorI.cpp"
+		],
+		[
+			"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/differentialrobotI.h",
+			"MU",
+			"EWIEGA46WW/moc_differentialrobotI.cpp"
+		],
+		[
+			"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/genericmonitor.h",
+			"MU",
+			"EWIEGA46WW/moc_genericmonitor.cpp"
+		],
+		[
+			"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/genericworker.h",
+			"MU",
+			"EWIEGA46WW/moc_genericworker.cpp"
+		],
+		[
+			"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/joystickadapterI.h",
+			"MU",
+			"EWIEGA46WW/moc_joystickadapterI.cpp"
+		],
+		[
+			"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/specificmonitor.h",
+			"MU",
+			"EWIEGA46WW/moc_specificmonitor.cpp"
+		],
+		[
+			"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/specificworker.h",
+			"MU",
+			"EWIEGA46WW/moc_specificworker.cpp"
+		]
+	],
+	"HEADER_EXTENSIONS" : [ "h", "hh", "h++", "hm", "hpp", "hxx", "in", "txx" ],
+	"INCLUDE_DIR" : "/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/pioneer_monitor_autogen/include",
+	"MOC_COMPILATION_FILE" : "/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/pioneer_monitor_autogen/mocs_compilation.cpp",
+	"MOC_DEFINITIONS" : 
+	[
+		"ICE_CPP11_MAPPING",
+		"QT_CORE_LIB",
+		"QT_GUI_LIB",
+		"QT_NETWORK_LIB",
+		"QT_NO_DEBUG",
+		"QT_OPENGL_LIB",
+		"QT_SQL_LIB",
+		"QT_WIDGETS_LIB",
+		"QT_XMLPATTERNS_LIB",
+		"QT_XML_LIB"
+	],
+	"MOC_DEPEND_FILTERS" : 
+	[
+		[
+			"Q_PLUGIN_METADATA",
+			"[\n][ \t]*Q_PLUGIN_METADATA[ \t]*\\([^\\)]*FILE[ \t]*\"([^\"]+)\""
+		]
+	],
+	"MOC_INCLUDES" : 
+	[
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src",
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src",
+		"/opt/robocomp/include",
+		"/classes",
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor",
+		"/home/pioneernuc/robocomp/classes",
+		"/home/pioneernuc/robocomp/libs",
+		"/home/pioneernuc/robocomp/interfaces",
+		"/include",
+		"/usr/include/x86_64-linux-gnu/qt5",
+		"/usr/include/x86_64-linux-gnu/qt5/QtGui",
+		"/usr/include/x86_64-linux-gnu/qt5/QtCore",
+		"/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++",
+		"/usr/include/x86_64-linux-gnu/qt5/QtWidgets",
+		"/usr/include/x86_64-linux-gnu/qt5/QtSql",
+		"/usr/include/x86_64-linux-gnu/qt5/QtOpenGL",
+		"/usr/include/x86_64-linux-gnu/qt5/QtXml",
+		"/usr/include/x86_64-linux-gnu/qt5/QtXmlPatterns",
+		"/usr/include/x86_64-linux-gnu/qt5/QtNetwork",
+		"/usr/include/c++/10",
+		"/usr/include/x86_64-linux-gnu/c++/10",
+		"/usr/include/c++/10/backward",
+		"/usr/lib/gcc/x86_64-linux-gnu/10/include",
+		"/usr/local/include",
+		"/usr/include/x86_64-linux-gnu",
+		"/usr/include"
+	],
+	"MOC_MACRO_NAMES" : [ "Q_OBJECT", "Q_GADGET", "Q_NAMESPACE" ],
+	"MOC_OPTIONS" : [],
+	"MOC_PATH_PREFIX" : true,
+	"MOC_PREDEFS_CMD" : 
+	[
+		"/usr/bin/c++",
+		"-dM",
+		"-E",
+		"-c",
+		"/usr/share/cmake-3.16/Modules/CMakeCXXCompilerABI.cpp"
+	],
+	"MOC_PREDEFS_FILE" : "/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/pioneer_monitor_autogen/moc_predefs.h",
+	"MOC_RELAXED_MODE" : false,
+	"MOC_SKIP" : 
+	[
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/BatteryStatus.cpp",
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/CameraSimple.cpp",
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/CommonBehavior.cpp",
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/DifferentialRobot.cpp",
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/FullPoseEstimation.cpp",
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/FullPoseEstimationPub.cpp",
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/GenericBase.cpp",
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/GpsUblox.cpp",
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/JoystickAdapter.cpp",
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/Laser.cpp",
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/MonitorBase.cpp",
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/RSSIStatus.cpp",
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/Radar.cpp",
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/Ultrasound.cpp"
+	],
+	"MULTI_CONFIG" : false,
+	"PARALLEL" : 4,
+	"PARSE_CACHE_FILE" : "/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/CMakeFiles/pioneer_monitor_autogen.dir/ParseCache.txt",
+	"QT_MOC_EXECUTABLE" : "/usr/lib/qt5/bin/moc",
+	"QT_UIC_EXECUTABLE" : "/usr/lib/qt5/bin/uic",
+	"QT_VERSION_MAJOR" : 5,
+	"SETTINGS_FILE" : "/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/CMakeFiles/pioneer_monitor_autogen.dir/AutogenUsed.txt",
+	"SOURCES" : 
+	[
+		[ "/home/pioneernuc/robocomp/classes/qlog/qlog.cpp", "MU" ],
+		[
+			"/home/pioneernuc/robocomp/classes/rapplication/rapplication.cpp",
+			"MU"
+		],
+		[ "/home/pioneernuc/robocomp/classes/sigwatch/sigwatch.cpp", "MU" ],
+		[
+			"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/commonbehaviorI.cpp",
+			"MU"
+		],
+		[
+			"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/differentialrobotI.cpp",
+			"MU"
+		],
+		[
+			"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/genericmonitor.cpp",
+			"MU"
+		],
+		[
+			"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/genericworker.cpp",
+			"MU"
+		],
+		[
+			"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/joystickadapterI.cpp",
+			"MU"
+		],
+		[
+			"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/main.cpp",
+			"MU"
+		],
+		[
+			"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/specificmonitor.cpp",
+			"MU"
+		],
+		[
+			"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/specificworker.cpp",
+			"MU"
+		]
+	],
+	"UIC_OPTIONS" : [],
+	"UIC_SEARCH_PATHS" : [],
+	"UIC_SKIP" : 
+	[
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/BatteryStatus.cpp",
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/CameraSimple.cpp",
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/CommonBehavior.cpp",
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/DifferentialRobot.cpp",
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/FullPoseEstimation.cpp",
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/FullPoseEstimationPub.cpp",
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/GenericBase.cpp",
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/GpsUblox.cpp",
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/JoystickAdapter.cpp",
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/Laser.cpp",
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/MonitorBase.cpp",
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/RSSIStatus.cpp",
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/Radar.cpp",
+		"/home/pioneernuc/robocomp/components/robocomp-pioneer/components/pioneer_monitor/src/Ultrasound.cpp"
+	],
+	"UIC_UI_FILES" : [],
+	"VERBOSITY" : 0
+}

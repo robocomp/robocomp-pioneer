@@ -1,0 +1,17 @@
+import "DifferentialRobot.idsl";
+import "JoystickAdapter.idsl";
+import "BatteryStatus.idsl";
+import "Ultrasound.idsl";
+import "RSSIStatus.idsl";
+import "MonitorBase.idsl";
+
+Component pioneer
+{
+    Communications
+    {
+        implements DifferentialRobot, BatteryStatus, Ultrasound, RSSIStatus, MonitorBase;
+        subscribesTo JoystickAdapter;
+    };
+    language Cpp11;
+};
+

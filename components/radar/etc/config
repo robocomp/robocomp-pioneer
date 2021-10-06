@@ -1,0 +1,16 @@
+# Endpoints for implements interfaces
+Radar.Endpoints=tcp -p 11234
+MonitorBase.Endpoints=tcp -p 12006
+
+
+
+
+Ice.Warn.Connections=0
+Ice.Trace.Network=0
+Ice.Trace.Protocol=0
+Ice.MessageSizeMax=20004800
+
+
+uart_port = /dev/radar
+baudrate = 9600
+timeout = 3

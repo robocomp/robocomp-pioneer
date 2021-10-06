@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="c2db7edc-6400-441c-8123-0d2000813968" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../pioneer_dual_realsense/etc/config" beforeDir="false" afterPath="$PROJECT_DIR$/../pioneer_dual_realsense/etc/config" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../pioneer_dual_realsense/src/specificworker.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../pioneer_dual_realsense/src/specificworker.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../pioneer_robot/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/../pioneer_robot/Testing/Temporary/LastTest.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../pioneer_robot/pioneer.cbp" beforeDir="false" afterPath="$PROJECT_DIR$/../pioneer_robot/pioneer.cbp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../pioneer_robot/src/specificworker.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../pioneer_robot/src/specificworker.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../realsense_camera/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/../realsense_camera/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../realsense_camera/etc/config" beforeDir="false" afterPath="$PROJECT_DIR$/../realsense_camera/etc/config" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/etc/config" beforeDir="false" afterPath="$PROJECT_DIR$/etc/config" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/realsense_pose_estimation.cdsl" beforeDir="false" afterPath="$PROJECT_DIR$/realsense_pose_estimation.cdsl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/genericworker.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/genericworker.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/real_sense_pose_estimation.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/real_sense_pose_estimation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/specificworker.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/specificworker.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="ProjectId" id="1tybUjcZAoJ787B0Kse0QD2NRH7" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../pioneer_robot" />
+  </component>
+  <component name="RunManager" selected="Python.specificworker">
+    <configuration name="real_sense_pose_estimation" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="realsense_pose_estimation" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/real_sense_pose_estimation.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="specificworker" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="realsense_pose_estimation" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/specificworker.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.real_sense_pose_estimation" />
+      <item itemvalue="Python.specificworker" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.specificworker" />
+        <item itemvalue="Python.real_sense_pose_estimation" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c2db7edc-6400-441c-8123-0d2000813968" name="Default Changelist" comment="" />
+      <created>1623744295283</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1623744295283</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/specificworker.py</url>
+          <line>39</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/specificworker.py</url>
+          <line>57</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>

@@ -1,0 +1,17 @@
+import "GpsUblox.idsl";
+import "FullPoseEstimation.idsl";
+import "MonitorBase.idsl";
+
+Component gps_ublox
+{
+    Communications
+    {
+	requires FullPoseEstimation;
+	implements GpsUblox, MonitorBase;
+	publishes GpsUblox;
+    };
+    language python;
+    gui Qt(QWidget);
+
+};
+

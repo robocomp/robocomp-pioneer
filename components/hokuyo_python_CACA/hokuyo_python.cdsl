@@ -1,0 +1,14 @@
+import "Laser.idsl";
+import "GenericBase.idsl";
+import "MonitorBase.idsl";
+
+Component hokuyo_python
+{
+    Communications
+    {
+        implements Laser, MonitorBase;
+        requires GenericBase;
+    };
+    language python;
+};
+

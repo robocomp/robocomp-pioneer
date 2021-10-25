@@ -1145,6 +1145,29 @@
                             }
                         },
                         "src": "1"
+                    },
+                    {
+                        "dst": "43119223555227668",
+                        "label": "RT",
+                        "linkAttribute": {
+                            "rt_rotation_euler_xyz": {
+                                "type": 3,
+                                "value": [
+                                    0,
+                                    0,
+                                    0
+                                ]
+                            },
+                            "rt_translation": {
+                                "type": 3,
+                                "value": [
+                                    0,
+                                    0,
+                                    0
+                                ]
+                            }
+                        },
+                        "src": "1"
                     }
                 ],
                 "name": "world",
@@ -1796,29 +1819,6 @@
                         "src": "200"
                     },
                     {
-		    "dst": "820",
-		    "label": "RT",
-		    "linkAttribute": {
-		      "rt_rotation_euler_xyz": {
-			"type": 3,
-			"value": [
-			  0,
-			  0,
-			  0
-			]
-		      },
-		      "rt_translation": {
-			"type": 3,
-			"value": [
-			  0,
-			  -200,
-			  200
-			]
-		      }
-		    },
-		    "src": "200"
-		  },
-                    {
                         "dst": "210",
                         "label": "RT",
                         "linkAttribute": {
@@ -2020,6 +2020,29 @@
                                     0,
                                     0,
                                     350
+                                ]
+                            }
+                        },
+                        "src": "200"
+                    },
+                    {
+                        "dst": "820",
+                        "label": "RT",
+                        "linkAttribute": {
+                            "rt_rotation_euler_xyz": {
+                                "type": 3,
+                                "value": [
+                                    0,
+                                    0,
+                                    0
+                                ]
+                            },
+                            "rt_translation": {
+                                "type": 3,
+                                "value": [
+                                    0,
+                                    -200,
+                                    200
                                 ]
                             }
                         },
@@ -2441,50 +2464,6 @@
                 "name": "battery",
                 "type": "plane"
             },
-      	    "820": {
-		"attribute": {
-		  "color": {
-		    "type": 0,
-		    "value": "Red"
-		  },
-		  "depth": {
-		    "type": 1,
-		    "value": 15
-		  },
-		  "height": {
-		    "type": 1,
-		    "value": 20
-		  },
-		  "level": {
-		    "type": 1,
-		    "value": 2
-		  },
-		  "parent": {
-		    "type": 7,
-		    "value": "200"
-		  },
-		  "pos_x": {
-		    "type": 2,
-		    "value": -82.149361
-		  },
-		  "pos_y": {
-		    "type": 2,
-		    "value": -517.922058
-		  },
-		  "texture": {
-		    "type": 0,
-		    "value": "#b7e059"
-		  },
-		  "width": {
-		    "type": 1,
-		    "value": 70
-		  }
-		},
-		"id": "820",
-		"links": [],
-		"name": "gps",
-		"type": "plane"
-	      },
             "221": {
                 "attribute": {
                     "color": {
@@ -3561,6 +3540,43 @@
                 "name": "wall_43",
                 "type": "plane"
             },
+            "43119223555227668": {
+                "attribute": {
+                    "color": {
+                        "type": 0,
+                        "value": "GoldenRod"
+                    },
+                    "pos_x": {
+                        "type": 2,
+                        "value": 277.299988
+                    },
+                    "pos_y": {
+                        "type": 2,
+                        "value": -128.220001
+                    },
+                    "level": {
+                        "type": 1,
+                        "value": 1
+                    },
+                    "parent": {
+                        "type": 7,
+                        "value": "1"
+                    },
+                    "wayp_x": {
+                        "type": 1,
+                        "value": 0
+                    },
+                    "wayp_y": {
+                        "type": 1,
+                        "value": 0
+                    }
+                },
+                "id": "43119223555227668",
+                "links": [
+                ],
+                "name": "waypoints",
+                "type": "wayp"
+            },
             "44": {
                 "attribute": {
                     "color": {
@@ -4099,6 +4115,51 @@
                 "links": [
                 ],
                 "name": "Border_4",
+                "type": "plane"
+            },
+            "820": {
+                "attribute": {
+                    "color": {
+                        "type": 0,
+                        "value": "Red"
+                    },
+                    "depth": {
+                        "type": 1,
+                        "value": 15
+                    },
+                    "height": {
+                        "type": 1,
+                        "value": 20
+                    },
+                    "level": {
+                        "type": 1,
+                        "value": 2
+                    },
+                    "parent": {
+                        "type": 7,
+                        "value": "200"
+                    },
+                    "pos_x": {
+                        "type": 2,
+                        "value": -82.149361
+                    },
+                    "pos_y": {
+                        "type": 2,
+                        "value": -517.922058
+                    },
+                    "texture": {
+                        "type": 0,
+                        "value": "#b7e059"
+                    },
+                    "width": {
+                        "type": 1,
+                        "value": 70
+                    }
+                },
+                "id": "820",
+                "links": [
+                ],
+                "name": "gps",
                 "type": "plane"
             }
         }

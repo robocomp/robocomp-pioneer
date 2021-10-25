@@ -9,6 +9,7 @@
 
 // NODES
 const std::string robot_name = "robot";
+const std :: string waypoints_name = "waypoints";
 const std::string robot_body_name = "body";
 const std::string robot_mind_name = "mind"; 
 const std::string world_name = "world"; 
@@ -30,6 +31,7 @@ const std::string current_path_name = "current_path";
 
 //NODE TYPES
 const std::string omnirobot_type_name = "omnirobot";
+const std::string wayp_type_name = "wayp";
 const std::string differentialrobot_type_name = "differentialrobot";
 const std::string path_to_target_type_name = "path_to_target";
 const std::string intention_type_name = "intention";

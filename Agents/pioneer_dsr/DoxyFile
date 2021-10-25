@@ -18,7 +18,7 @@
 DOXYFILE_ENCODING      = UTF-8
 
 # ROBOCOMP
-PROJECT_NAME           = mission_controller_pioneer
+PROJECT_NAME           = pioneer_dsr
 PROJECT_NUMBER         =
 
 

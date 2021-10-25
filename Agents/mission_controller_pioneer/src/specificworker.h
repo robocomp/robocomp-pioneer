@@ -22,8 +22,6 @@
 	@author authorname
 */
 
-
-
 #ifndef SPECIFICWORKER_H
 #define SPECIFICWORKER_H
 
@@ -34,10 +32,14 @@
 #include <custom_widget.h>
 #include  "../../../etc/pioneer_world_names.h"
 #include <opencv2/opencv.hpp>
-#include "/home/robocomp/robocomp/components/robocomp-giraff/etc/plan.h"
+#include "/home/robocomp/robocomp/components/robocomp-pioneer/etc/plan.h"
 #include <QListWidget>
 #include <QSpinBox>
 #include "ui_mission_pointUI.h"
+#include "ui_mission_pathfollowUI.h"
+#include "/home/robocomp/robocomp/classes/abstract_graphic_viewer/abstract_graphic_viewer.h"
+#include <Eigen/Geometry>
+
 
 class SpecificWorker : public GenericWorker
 {
@@ -55,6 +57,7 @@ public slots:
     void slot_stop_mission();
     void slot_cancel_mission();
     void slot_change_mission_selector(int);
+    void trace_button_slot(bool);
 
 private:
 	// DSR graph
@@ -76,6 +79,7 @@ private:
 	std::unique_ptr<DSR::DSRViewer> graph_viewer;
 	QHBoxLayout mainLayout;
 	void add_or_assign_node_slot(std::uint64_t, const std::string &type);
+    void modify_attrs_slot(std::uint64_t id, const std::vector<std::string>& att_names);
 	void add_or_assign_attrs_slot(std::uint64_t id, const std::map<std::string, DSR::Attribute> &attribs){};
 	void add_or_assign_edge_slot(std::uint64_t from, std::uint64_t to,  const std::string &type){};
     void del_edge_slot(std::uint64_t from, std::uint64_t to, const std::string &edge_tag){};
@@ -87,6 +91,7 @@ private:
     DSR::QScene2dViewer* widget_2d;
     Custom_widget custom_widget;
     Ui_Goto_UI point_dialog;
+    Ui_PathFollow_UI pathfollow_dialog;
 
     // Laser
     using LaserData = std::tuple<std::vector<float>, std::vector<float>>;  //<angles, dists>
@@ -94,7 +99,7 @@ private:
 
     // Robot and shape
     QPolygonF robot_polygon;
-    void send_command_to_robot(const std::tuple<float, float, float> &speeds);   //adv, side, rot
+    void send_command_to_robot(const std::tuple<float, float, float> &speeds);   //adv, rot, side
 
     // Camera
     DoubleBuffer<std::vector<std::uint8_t>, std::vector<std::uint8_t>> virtual_camera_buffer;
@@ -102,17 +107,20 @@ private:
 
     // Missions
     DoubleBuffer<Plan, Plan> plan_buffer;
+    Plan temporary_plan;
     Plan current_plan;
-    Plan list_plan;
     void insert_intention_node(const Plan &plan);
     void create_goto_mission();
     void create_bouncer_mission();
     void create_path_mission();
+    AbstractGraphicViewer *pathfollow_draw_widget;
 
     //Path
-    std::vector<Eigen::Vector3d> path;
+    std::vector<Eigen::Vector2f> path;  // check if can be made local
+    QPointF last_point;
+    std::vector<QGraphicsLineItem *> lines;
     DoubleBuffer<std::vector<Eigen::Vector3d>,std::vector<Eigen::Vector3d>> path_buffer;
-    void draw_path(std::vector<Eigen::Vector3d> &path, QGraphicsScene* viewer_2d);
+    void draw_path(std::vector<Eigen::Vector2f> &path, QGraphicsScene* viewer_2d, bool remove = false);
     void follow_path_copy_path_to_graph(const std::vector<float> &x_values, const std::vector<float> &y_values);
 };
 

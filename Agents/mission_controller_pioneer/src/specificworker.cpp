@@ -22,6 +22,7 @@
 #include <cppitertools/zip.hpp>
 #include <cppitertools/range.hpp>
 #include <cppitertools/sliding_window.hpp>
+#include <unordered_map>
 
 /**
 * \brief Default constructor
@@ -98,24 +99,40 @@ void SpecificWorker::initialize(int period)
         setWindowTitle(QString::fromStdString(agent_name + "-") + QString::number(agent_id));
 
         // 2D widget
+
         widget_2d = qobject_cast<DSR::QScene2dViewer *>(graph_viewer->get_widget(opts::scene));
+        cout << "widget2D CARGA";
         widget_2d->set_draw_laser(true);
-        //connect(widget_2d, SIGNAL(mouse_right_click(int, int, std::uint64_t)), this, SLOT(new_target_from_mouse(int, int, std::uint64_t)));
 
         // custom widget
-        graph_viewer->add_custom_widget_to_dock("Giraff Plan Controller", &custom_widget);
+        graph_viewer->add_custom_widget_to_dock("Pioneer Plan Controller", &custom_widget);
         connect(custom_widget.pushButton_start_mission, SIGNAL(clicked()), this, SLOT(slot_start_mission()));
         connect(custom_widget.pushButton_stop_mission, SIGNAL(clicked()), this, SLOT(slot_stop_mission()));
         connect(custom_widget.pushButton_cancel_mission, SIGNAL(clicked()), this, SLOT(slot_cancel_mission()));
         custom_widget.layout()->addWidget(widget_2d);
         custom_widget.raise();
 
-        //List of missions
+        // List of missions
         custom_widget.list_plan->addItem("Select a mission");
         custom_widget.list_plan->addItem("Goto x");
         custom_widget.list_plan->addItem("Path p"); //cargar un plan con diferentes puntos y más adelante, más planes
         custom_widget.list_plan->addItem("Bouncer");
         connect(custom_widget.list_plan, SIGNAL(currentIndexChanged(int)), this , SLOT(slot_change_mission_selector(int)));
+
+        // stacked widgets
+        point_dialog.setupUi(custom_widget.stacked_widget->widget(0));
+        pathfollow_dialog.setupUi(custom_widget.stacked_widget->widget(1));
+        auto empty_widget = new QWidget();
+        custom_widget.stacked_widget->addWidget(empty_widget);
+        custom_widget.stacked_widget->setCurrentIndex(2);
+        QRectF dimensions;
+        auto world_node = G->get_node(world_name).value();
+        dimensions.setLeft(G->get_attrib_by_name<OuterRegionLeft_att>(world_node).value());
+        dimensions.setTop(G->get_attrib_by_name<OuterRegionTop_att>(world_node).value());
+        dimensions.setRight(G->get_attrib_by_name<OuterRegionRight_att>(world_node).value());
+        dimensions.setBottom(G->get_attrib_by_name<OuterRegionBottom_att>(world_node).value());
+        pathfollow_draw_widget = new AbstractGraphicViewer(pathfollow_dialog.test_widget, dimensions);
+
 
         // get camera_api
         if(auto cam_node = G->get_node(pioneer_camera_virtual_name); cam_node.has_value())
@@ -123,6 +140,7 @@ void SpecificWorker::initialize(int period)
         else
         {
             std::cout << "Controller-DSR terminate: could not find a camera node named " << pioneer_head_camera_right_name << std::endl;
+
             std::terminate();
         }
 
@@ -134,6 +152,7 @@ void SpecificWorker::initialize(int period)
         {
             auto width = G->get_attrib_by_name<width_att>(robot_body.value());
             auto height = G->get_attrib_by_name<depth_att>(robot_body.value());
+            cout << "Width " << width.value() << " height " << height.value() << endl;
             if (width.has_value() and height.has_value())
             {
                 robot_polygon << QPointF(-width.value() / 2, -height.value() / 2)
@@ -152,6 +171,11 @@ void SpecificWorker::initialize(int period)
             std::terminate();
         }
 
+        // trail
+        auto robot_pos = inner_eigen->transform(world_name, robot_name).value();
+        last_point = QPointF(robot_pos.x(), robot_pos.y());
+        connect( custom_widget.path_trail_button, SIGNAL(toggled(bool)), this, SLOT(trace_button_slot(bool)));
+
         // Eigen format
         OctaveFormat = Eigen::IOFormat(Eigen::StreamPrecision, 0, ", ", ";\n", "", "", "[", "]");
         CommaInitFmt = Eigen::IOFormat(Eigen::StreamPrecision, Eigen::DontAlignCols, ", ", ", ", "", "", " << ", ";");
@@ -166,37 +190,67 @@ void SpecificWorker::compute()
     static std::chrono::steady_clock::time_point begin, lastPathStep;
 
     // check for existing missions
-    static Plan plan;
     if (auto plan_o = plan_buffer.try_get(); plan_o.has_value())
     {
-        plan = plan_o.value();
-        std::cout << __FUNCTION__  << " New plan arrived: " << std::endl; std::cout << plan.pprint() << std::endl;
-        custom_widget.textedit_current_plan->appendPlainText("-> compute: initiating plan");
-        plan.set_active(true);
+        current_plan = plan_o.value();
+        std::cout << __FUNCTION__  << " New plan arrived: " << std::endl;
+        std::cout << current_plan.pprint() << std::endl;
+        custom_widget.textedit_current_plan->appendPlainText("-> compute: initiating plan " + current_plan.get_action());
+        current_plan.set_running();
     }
-    if(plan.is_active())
+
+    auto robot_pos = inner_eigen->transform(world_name, robot_name).value();
+    float coordX = point_dialog.goto_spinbox_coordX->value();
+    float coordY = point_dialog.goto_spinbox_coordY->value();
+    float umbral = 200.0;
+    auto robot_node = G->get_node(robot_name);
+    float adv = G->get_attrib_by_name<robot_ref_adv_speed_att>(robot_node.value()).value_or(0);
+    float rot = G->get_attrib_by_name<robot_ref_rot_speed_att>(robot_node.value()).value_or(0);
+
+    if (current_plan.is_running())
     {
-        if( auto path = path_buffer.try_get(); path.has_value())
-            qInfo() << __FUNCTION__ << " Siguiendo el plan...";
+        qInfo() << __FUNCTION__ << " Plan is running...";
+
+        if (current_plan.get_action() == "GOTO")
+        {
+            float mod = sqrt(pow((coordX - robot_pos.x()), 2) + pow((coordY - robot_pos.y()), 2));
+            if (mod < umbral && (adv == 0.0 && rot == 0.0))
+            {
+                current_plan.is_finished();
+                slot_stop_mission();
+                qInfo() << __FUNCTION__ << " Plan finished!";
+            }
+        }
     }
+
     else
     { // there should be a plan after a few seconds
     }
+
+
     read_camera();
+    // path trail
+    if(custom_widget.path_trail_button->isChecked())
+    {
+        auto robot_pos = inner_eigen->transform(world_name, robot_name).value();
+        QLineF line(last_point.x(), last_point.y(), robot_pos.x(), robot_pos.y());
+        lines.push_back(widget_2d->scene.addLine(line, QPen(QColor("Blue"),40)));
+        last_point = QPointF(robot_pos.x(), robot_pos.y());
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 void SpecificWorker::read_camera()
 {
     static QPixmap pix;
-    if (auto vframe_t = virtual_camera_buffer.try_get(); vframe_t.has_value() and custom_widget.image_onoff_button->isChecked())
+    if (auto vframe_t = virtual_camera_buffer.try_get(); vframe_t.has_value())
     {
         auto vframe = cv::Mat(cam_api->get_height(), cam_api->get_width(), CV_8UC3, vframe_t.value().data());
         pix = QPixmap::fromImage(QImage(vframe.data, vframe.cols, vframe.rows, QImage::Format_RGB888));
-        custom_widget.label_rgb->setPixmap(pix);
+        // custom_widget.label_rgb->setPixmap(pix);
     }
-    else if (!custom_widget.image_onoff_button->isChecked())
-        custom_widget.label_rgb->clear();
+//    else if (!custom_widget.image_onoff_button->isChecked())
+//        custom_widget.label_rgb->clear();
 
 }
 
@@ -205,93 +259,204 @@ void SpecificWorker::read_camera()
 ////////////////////////////////////////////////////////////////////////////////////////////
 void SpecificWorker::create_bouncer_mission()
 {
-    current_plan.reset();
-    current_plan.action = Plan::Actions::BOUNCE;
-    current_plan.planJ.insert("BOUNCE", QVariantMap());
-    custom_widget.textedit_current_plan->appendPlainText(QString::fromStdString(current_plan.pprint()));
+    custom_widget.stacked_widget->setCurrentIndex(2);
+    temporary_plan.new_plan(Plan::Actions::BOUNCE);
+    custom_widget.textedit_current_plan->appendPlainText("-> New temporary plan: BOUNCE");
+    custom_widget.textedit_current_plan->appendPlainText(QString::fromStdString(temporary_plan.pprint()));
 }
 
 void SpecificWorker::create_path_mission()
 {
-    current_plan.reset();
-    current_plan.action = Plan::Actions::FOLLOW_PATH;
-    current_plan.planJ.insert("FOLLOW_PATH", QVariantMap());
-    custom_widget.textedit_current_plan->appendPlainText(QString::fromStdString(current_plan.pprint()));
+    custom_widget.stacked_widget->setCurrentIndex(1);
+    temporary_plan.new_plan(Plan::Actions::FOLLOW_PATH);
+    custom_widget.textedit_current_plan->appendPlainText("-> New temporary plan: FOLLOW_PATH");
+    custom_widget.textedit_current_plan->appendPlainText(QString::fromStdString(temporary_plan.pprint()));
 
-    const float radio = 700;
-    const float arco = 400;
-    current_plan.x_path.clear();
-    current_plan.y_path.clear();
-    auto robot = inner_eigen->transform(world_name, robot_name);
+    auto draw_circle = [this]()
+            {
+                // remove current drawing
+                std::vector<Eigen::Vector2f> fake_path;
+                draw_path(fake_path, &pathfollow_draw_widget->scene, true);
+                draw_path(fake_path, &widget_2d->scene, true);
 
-    for(auto &&alfa : iter::range(0.0, 2*M_PI, (double)(arco/radio)))
+                const float radio = pathfollow_dialog.circle_radius_slider->value();
+                const float arco = 200;  // get from robot size
+                auto robot_pose = inner_eigen->transform(world_name, robot_name).value();
+                temporary_plan.x_path.clear();
+                temporary_plan.y_path.clear();
+                std::vector<Eigen::Vector2f> local_path;
+                for(auto &&alfa : iter::range(0.0, 2*M_PI, (double)(arco/radio)))
+                {
+                    float x = radio * cos(alfa) + robot_pose.x();
+                    float y = radio * sin(alfa) + robot_pose.y();
+                    temporary_plan.x_path.push_back(x);
+                    temporary_plan.y_path.push_back(y);
+                    local_path.emplace_back(Eigen::Vector2f(x, y));
+                }
+                draw_path(local_path, &pathfollow_draw_widget->scene);
+            };
+    //draw_circle(); // it starts with the circle button selected
+    auto draw_oval = [this]()
     {
-       current_plan.x_path.push_back(radio * cos(alfa) + robot.value().x() - radio);
-       current_plan.y_path.push_back(radio * sin(alfa) + robot.value().y());
-    }
+        // remove curent drawing
+        std::vector<Eigen::Vector2f> fake_path;
+        draw_path(fake_path, &pathfollow_draw_widget->scene, true);
+        draw_path(fake_path, &widget_2d->scene, true);
+        auto robot_pose = inner_eigen->transform(world_name, robot_name).value();
+
+        const float long_radio = pathfollow_dialog.oval_long_radius_slider->value();
+        const float short_radio = pathfollow_dialog.oval_short_radius_slider->value();
+        const float arco = 200;  // get from robot size
+        temporary_plan.x_path.clear();
+        temporary_plan.y_path.clear();
+        std::vector<Eigen::Vector2f> local_path;  // for drawing
+        // start drawing a line from center to the right
+        Eigen::ParametrizedLine<float, 2> line(Eigen::Vector2f(0.f, short_radio), Eigen::Vector2f(1.f,0.f));
+        for(auto &&t: iter::range(0.f, long_radio/2, arco))
+        {
+            auto p = line.pointAt(t);
+            temporary_plan.x_path.push_back(p.x());
+            temporary_plan.y_path.push_back(p.y());
+            local_path.emplace_back(p);
+        }
+        for(auto &&alfa : iter::range(M_PI/2.0, -M_PI/2.0, -(double)(arco/short_radio)))
+        {
+            float x = short_radio * cos(alfa) + long_radio/2 + robot_pose.x();
+            float y = short_radio * sin(alfa) + robot_pose.y();
+            temporary_plan.x_path.push_back(x);
+            temporary_plan.y_path.push_back(y);
+            local_path.emplace_back(Eigen::Vector2f(x, y));
+        }
+        line = Eigen::ParametrizedLine<float, 2>(Eigen::Vector2f(long_radio/2, -short_radio), Eigen::Vector2f(-1.0, 0.0));
+        for(auto &&t: iter::range(0.f, long_radio, arco))
+        {
+            auto p = line.pointAt(t);
+            temporary_plan.x_path.push_back(p.x());
+            temporary_plan.y_path.push_back(p.y());
+            local_path.emplace_back(p);
+        }
+        for(auto &&alfa : iter::range(3*M_PI/2.0, M_PI/2, -(double)(arco/short_radio)))
+        {
+            float x = short_radio * cos(alfa) - long_radio/2;
+            float y = short_radio * sin(alfa);
+            temporary_plan.x_path.push_back(x);
+            temporary_plan.y_path.push_back(y);
+            local_path.emplace_back(Eigen::Vector2f(x, y));
+        }
+        line = Eigen::ParametrizedLine<float, 2>(Eigen::Vector2f(-long_radio/2, short_radio), Eigen::Vector2f(1.f, 0.0));
+        for(auto &&t: iter::range(0.f, long_radio, arco))
+        {
+            auto p = line.pointAt(t);
+            temporary_plan.x_path.push_back(p.x());
+            temporary_plan.y_path.push_back(p.y());
+            local_path.emplace_back(p);
+        }
+        draw_path(local_path, &pathfollow_draw_widget->scene);
+    };
+    //draw_oval();
+
+    connect(pathfollow_dialog.button_group, QOverload<QAbstractButton *>::of(&QButtonGroup::buttonClicked),
+            [this, draw_circle, draw_oval](QAbstractButton *button)
+            {
+                if(button == pathfollow_dialog.circle_radio_button)
+                {
+                    qInfo() << __FUNCTION__ << " circle selected";
+                    draw_circle();
+                }
+                else if(button == pathfollow_dialog.oval_radio_button)
+                {
+                    qInfo() << __FUNCTION__ << " oval selected";
+                    draw_oval();
+                }
+            });
+
+    connect(pathfollow_dialog.circle_radius_slider, qOverload<int>(&QSlider::valueChanged),[draw_circle](int v)
+    {
+        draw_circle();
+    });
+
+    connect(pathfollow_dialog.oval_short_radius_slider, qOverload<int>(&QSlider::valueChanged),[draw_oval](int v)
+    {
+        draw_oval();
+    });
+    connect(pathfollow_dialog.oval_long_radius_slider, qOverload<int>(&QSlider::valueChanged),[draw_oval](int v)
+    {
+        draw_oval();
+    });
 }
 
-void SpecificWorker::create_goto_mission()
-{
+void SpecificWorker::create_goto_mission() {
     static QGraphicsEllipseItem *target_scene;
-    point_dialog.setupUi(custom_widget.empty_widget);
-    custom_widget.empty_widget->show();
-    current_plan.reset();
-    current_plan.action = Plan::Actions::GOTO;
-    current_plan.planJ.insert("GOTO", QVariantMap());
+    custom_widget.stacked_widget->setCurrentIndex(0);
+    temporary_plan.new_plan(Plan::Actions::GOTO);
+    custom_widget.textedit_current_plan->appendPlainText("-> New temporary plan: GOTO");
+    custom_widget.textedit_current_plan->appendPlainText(QString::fromStdString(temporary_plan.pprint()));
 
-    connect(point_dialog.goto_spinbox_coordX, qOverload<int>(&QSpinBox::valueChanged),[this](int v)
-    {
-        auto p = qvariant_cast<QVariantMap>(current_plan.planJ["GOTO"]);
-        p.insert("x", v);
-        current_plan.planJ["GOTO"].setValue(p);
-        custom_widget.textedit_current_plan->appendPlainText(QString::fromStdString(current_plan.pprint()));
+    connect(point_dialog.goto_spinbox_coordX, qOverload<int>(&QSpinBox::valueChanged), [this](int v) {
+        if (not temporary_plan.is_valid()) //resetea el valor de la y cuando pones la x
+            temporary_plan.new_plan(Plan::Actions::GOTO);
 
-        if(target_scene != nullptr)
+        temporary_plan.insert_attribute("x", v);
+        custom_widget.textedit_current_plan->appendPlainText("-> New attribute 'x' in GOTO plan");
+        custom_widget.textedit_current_plan->appendPlainText(QString::fromStdString(temporary_plan.pprint()));
+        // redraw target
+        if (target_scene != nullptr)
             widget_2d->scene.removeItem(target_scene);
-        target_scene = widget_2d->scene.addEllipse(-100, -100, 200, 200, QPen(QColor("Orange")), QBrush(QColor("Orange")));
+        target_scene = widget_2d->scene.addEllipse(-100, -100, 200, 200, QPen(QColor("Orange")),
+                                                   QBrush(QColor("Orange")));
         target_scene->setPos(v, point_dialog.goto_spinbox_coordY->value());
         target_scene->setZValue(100);
     });
 
-    connect(point_dialog.goto_spinbox_coordY, qOverload<int>(&QSpinBox::valueChanged), [this](int v)
-    {
-        auto p = qvariant_cast<QVariantMap>(current_plan.planJ["GOTO"]);
-        p.insert("y", v);
-        current_plan.planJ["GOTO"].setValue(p);
-        custom_widget.textedit_current_plan->appendPlainText(QString::fromStdString(current_plan.pprint()));
+    connect(point_dialog.goto_spinbox_coordY, qOverload<int>(&QSpinBox::valueChanged), [this](int v) {
+//        if (not temporary_plan.is_valid())
+//            temporary_plan.new_plan(Plan::Actions::GOTO);
 
-        if(target_scene != nullptr)
+        temporary_plan.insert_attribute("y", v);
+        custom_widget.textedit_current_plan->appendPlainText("-> New attribute 'y' in GOTO plan");
+        custom_widget.textedit_current_plan->appendPlainText(QString::fromStdString(temporary_plan.pprint()));
+        //redraw target
+        if (target_scene != nullptr)
             widget_2d->scene.removeItem(target_scene);
-        target_scene = widget_2d->scene.addEllipse(-100, -100, 200, 200, QPen(QColor("Orange")), QBrush(QColor("Orange")));
+        target_scene = widget_2d->scene.addEllipse(-100, -100, 200, 200, QPen(QColor("Orange")),
+                                                   QBrush(QColor("Orange")));
         target_scene->setPos(point_dialog.goto_spinbox_coordX->value(), v);
         target_scene->setZValue(100);
     });
 
-    connect(point_dialog.goto_spinbox_angle, qOverload<int>(&QSpinBox::valueChanged), [this](int v)
-    {
-        auto p = qvariant_cast<QVariantMap>(current_plan.planJ["GOTO"]);
-        p.insert("angle", v);
-        current_plan.planJ["GOTO"].setValue(p);
-        custom_widget.textedit_current_plan->appendPlainText(QString::fromStdString(current_plan.pprint()));
+    connect(point_dialog.goto_spinbox_angle, qOverload<int>(&QSpinBox::valueChanged), [this](int v) {
+        temporary_plan.insert_attribute("destiny", v);
+        custom_widget.textedit_current_plan->appendPlainText("-> New attribute 'destiny' in GOTO plan");
+        custom_widget.textedit_current_plan->appendPlainText(QString::fromStdString(temporary_plan.pprint()));
     });
 
-    connect(widget_2d, &DSR::QScene2dViewer::mouse_right_click,[this](int x, int y, std::uint64_t obj)
-    {
-        if(auto node = G->get_node(obj); node.has_value())
-        {
-            auto p = qvariant_cast<QVariantMap>(current_plan.planJ["GOTO"]);
-            p.insert("destiny", QString::fromStdString(node.value().name()));
-            current_plan.planJ["GOTO"].setValue(p);
-        }
+    connect(widget_2d, &DSR::QScene2dViewer::mouse_right_click, [this](int x, int y, std::uint64_t obj) {
+        if (not temporary_plan.is_valid())
+            temporary_plan.new_plan(Plan::Actions::GOTO);
+
+        if (auto node = G->get_node(obj); node.has_value())
+            temporary_plan.insert_attribute("destiny", QString::fromStdString(node.value().name()));
+
         point_dialog.goto_spinbox_coordX->setValue(x);
         point_dialog.goto_spinbox_coordY->setValue(y);
 
-        if(target_scene != nullptr)
+        if( auto waypoint = G->get_node(waypoints_name); waypoint.has_value())
+        {
+            G->add_or_modify_attrib_local<wayp_x_att>(waypoint.value(), (int) x);
+            G->add_or_modify_attrib_local<wayp_y_att>(waypoint.value(), (int) y);
+            G->update_node(waypoint.value());
+        }
+
+
+
+        // redraw target
+        if (target_scene != nullptr)
             widget_2d->scene.removeItem(target_scene);
-        target_scene = widget_2d->scene.addEllipse(-100, -100, 200, 200, QPen(QColor("Orange")), QBrush(QColor("Orange")));
-        target_scene->setPos(x,y);
+        target_scene = widget_2d->scene.addEllipse(-100, -100, 200, 200, QPen(QColor("Orange")),
+                                                   QBrush(QColor("Orange")));
+        target_scene->setPos(x, y);
         target_scene->setZValue(100);
+
     });
 }
 
@@ -351,7 +516,7 @@ void SpecificWorker::add_or_assign_node_slot(const std::uint64_t id, const std::
                 auto &y_values = y_values_o.value().get();
                 path.reserve(x_values.size());
                 for(auto &&[p, q] : iter::zip(x_values,y_values))
-                    path.emplace_back(Eigen::Vector3d(p, q, 0.f));
+                    path.emplace_back(Eigen::Vector2f(p, q));
                 draw_path(path, &widget_2d->scene);
             }
         }
@@ -413,6 +578,7 @@ void SpecificWorker::follow_path_copy_path_to_graph(const std::vector<float> &x_
         auto path_to_target_node = path.value();
         G->add_or_modify_attrib_local<path_x_values_att>(path_to_target_node, x_values);
         G->add_or_modify_attrib_local<path_y_values_att>(path_to_target_node, y_values);
+        G->add_or_modify_attrib_local<path_is_cyclic_att>(path_to_target_node, true);
         G->update_node(path_to_target_node);
     }
     else // create path_to_target_node with the solution path
@@ -422,6 +588,7 @@ void SpecificWorker::follow_path_copy_path_to_graph(const std::vector<float> &x_
             auto path_to_target_node = DSR::Node::create<path_to_target_node_type>(current_path_name);
             G->add_or_modify_attrib_local<path_x_values_att>(path_to_target_node, x_values);
             G->add_or_modify_attrib_local<path_y_values_att>(path_to_target_node, y_values);
+            G->add_or_modify_attrib_local<path_is_cyclic_att>(path_to_target_node, true);
             G->add_or_modify_attrib_local<pos_x_att>(path_to_target_node, (float) -542);
             G->add_or_modify_attrib_local<pos_y_att>(path_to_target_node, (float) 106);
             G->add_or_modify_attrib_local<parent_att>(path_to_target_node, intention.value().id());
@@ -439,15 +606,17 @@ void SpecificWorker::follow_path_copy_path_to_graph(const std::vector<float> &x_
 
 void SpecificWorker::slot_start_mission()
 {
-    if(current_plan.is_complete())
+    if(not temporary_plan.is_valid())
+        slot_change_mission_selector(custom_widget.list_plan->currentIndex());
+    if(temporary_plan.is_complete())
     {
-        insert_intention_node(current_plan);
-        if(current_plan.is_action(Plan::Actions::FOLLOW_PATH))
-        {
-            follow_path_copy_path_to_graph(current_plan.x_path, current_plan.y_path);
-        }
-        auto temp_plan = current_plan;
+        insert_intention_node(temporary_plan);
+        if(temporary_plan.is_action(Plan::Actions::FOLLOW_PATH))
+            follow_path_copy_path_to_graph(temporary_plan.x_path, temporary_plan.y_path);
+
+        auto temp_plan = temporary_plan;
         plan_buffer.put(std::move(temp_plan));
+        custom_widget.textedit_current_plan->verticalScrollBar()->setValue(custom_widget.textedit_current_plan->verticalScrollBar()->maximum());
     }
     else
         qWarning() << __FUNCTION__ << "Plan is not complete. Mission cannot be created";
@@ -455,7 +624,7 @@ void SpecificWorker::slot_start_mission()
 
 void SpecificWorker::slot_stop_mission()
 {
-    send_command_to_robot(std::make_tuple(0.f,0.f,0.f));   //adv, side, rot
+    send_command_to_robot(std::make_tuple(0.f,0.f,0.f));   //adv, rot, side
     if(auto intention = G->get_node(current_intention_name); intention.has_value())
     {
         if(auto path = G->get_node(current_path_name); path.has_value())
@@ -464,10 +633,15 @@ void SpecificWorker::slot_stop_mission()
     }
     else
         qWarning() << __FUNCTION__ << "No intention node found";
+    if(temporary_plan.is_valid())
+        custom_widget.textedit_current_plan->appendPlainText("-> mission " + temporary_plan.get_action() + " cancelled");
+
+    temporary_plan.reset();
     current_plan.reset();
-    current_plan.set_empty(true);
-    custom_widget.textedit_current_plan->appendPlainText("-> mission cancelled");
-    custom_widget.empty_widget->hide();
+    // remove path form drawing
+    std::vector<Eigen::Vector2f> fake_path;
+    draw_path(fake_path, &widget_2d->scene, true); // just remove
+    draw_path(fake_path, &pathfollow_draw_widget->scene, true); // just remove
 }
 
 void SpecificWorker::slot_cancel_mission()
@@ -483,15 +657,12 @@ void SpecificWorker::slot_change_mission_selector(int index)
     switch(index)
     {
         case 1:
-            custom_widget.textedit_current_plan->appendPlainText("-> New GOTO mission");
             create_goto_mission(); // Goto_XYA
             break;
         case 2:
-            custom_widget.textedit_current_plan->appendPlainText("-> New PATH FOLLOWER mission");
             create_path_mission();
             break;
         case 3:
-            custom_widget.textedit_current_plan->appendPlainText("-> New BOUNCER mission");
             create_bouncer_mission();
             break;
     }
@@ -499,14 +670,27 @@ void SpecificWorker::slot_change_mission_selector(int index)
 /////////////////////////////////////////////////////////////////////////////////////////////
 /// Auxiliary methods
 /////////////////////////////////////////////////////////////////////////////////////////////
-void SpecificWorker::draw_path(std::vector<Eigen::Vector3d> &path, QGraphicsScene* viewer_2d)
+void SpecificWorker::draw_path(std::vector<Eigen::Vector2f> &path, QGraphicsScene* viewer_2d, bool remove)
 {
-    static std::vector<QGraphicsLineItem *> scene_road_points;
+    //static std::vector<QGraphicsLineItem *> scene_road_points;
+    static std::unordered_map<QGraphicsScene *, std::vector<QGraphicsLineItem *> *> scene_road_points_map;
+    std::vector<QGraphicsLineItem *> *scene_road_points;
+
+    if (scene_road_points_map.contains(viewer_2d))
+        scene_road_points = scene_road_points_map[viewer_2d];
+    else
+        scene_road_points = new std::vector<QGraphicsLineItem *>();
+
+    scene_road_points_map[viewer_2d] = scene_road_points;
 
     //clear previous points
-    for (QGraphicsLineItem* item : scene_road_points)
-        viewer_2d->removeItem((QGraphicsItem*)item);
-    scene_road_points.clear();
+    //for (QGraphicsLineItem* item : scene_road_points)
+    for (QGraphicsLineItem* item : *scene_road_points)
+        viewer_2d->removeItem((QGraphicsItem *) item);
+    //scene_road_points.clear();
+    scene_road_points->clear();
+
+    if(remove) return;      // Just clear the path
 
     /// Draw all points
     QGraphicsLineItem *line1, *line2;
@@ -534,20 +718,38 @@ void SpecificWorker::draw_path(std::vector<Eigen::Vector3d> &path, QGraphicsScen
             line2 = viewer_2d->addLine(qsegment_perp, QPen(QBrush(QColor(QString::fromStdString("#F0FF00"))), 20));
             line1->setZValue(2000);
             line2->setZValue(2000);
-            scene_road_points.push_back(line1);
-            scene_road_points.push_back(line2);
+//            scene_road_points.push_back(line1);
+//            scene_road_points.push_back(line2);
+            scene_road_points->push_back(line1);
+            scene_road_points->push_back(line2);
         }
 }
-void SpecificWorker::send_command_to_robot(const std::tuple<float, float, float> &speeds)   //adv, side, rot
+void SpecificWorker::send_command_to_robot(const std::tuple<float, float, float> &speeds)   //adv, rot, side
 {
-    auto &[adv_, side_, rot_] = speeds;
+    auto &[adv_, rot_, side_] = speeds;
     auto robot_node = G->get_node(robot_name);
     G->add_or_modify_attrib_local<robot_ref_adv_speed_att>(robot_node.value(),  (float)adv_);
     G->add_or_modify_attrib_local<robot_ref_rot_speed_att>(robot_node.value(), (float)rot_);
-    G->add_or_modify_attrib_local<robot_ref_side_speed_att>(robot_node.value(),  (float)side_);
+    G->add_or_modify_attrib_local<robot_ref_side_speed_att>(robot_node.value(), (float)side_);
     G->update_node(robot_node.value());
 }
-
+void SpecificWorker::trace_button_slot(bool checked)
+{
+    if(not checked)
+    {
+        qInfo() << "Should delete lines";
+        for(auto &l : lines)
+            widget_2d->scene.removeItem(l);
+        lines.clear();
+    }
+    else
+        try
+        {
+            auto robot_pos = inner_eigen->transform(world_name, robot_name).value();
+            last_point = QPointF(robot_pos.x(), robot_pos.y());
+        }
+        catch(const Ice::Exception &e) { std::cout << e.what() << std::endl;}
+}
 //////////////////////////////////////////////////////////////////////////////////
 
 int SpecificWorker::startup_check()

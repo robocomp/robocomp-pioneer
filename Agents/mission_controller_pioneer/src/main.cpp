@@ -18,11 +18,11 @@
  */
 
 
-/** \mainpage RoboComp::mission_controller_giraff
+/** \mainpage RoboComp::mission_controller_pioneer
  *
  * \section intro_sec Introduction
  *
- * The mission_controller_giraff component...
+ * The mission_controller_pioneer component...
  *
  * \section interface_sec Interface
  *
@@ -34,7 +34,7 @@
  * ...
  *
  * \subsection install2_ssec Compile and install
- * cd mission_controller_giraff
+ * cd mission_controller_pioneer
  * <br>
  * cmake . && make
  * <br>
@@ -52,7 +52,7 @@
  *
  * \subsection execution_ssec Execution
  *
- * Just: "${PATH_TO_BINARY}/mission_controller_giraff --Ice.Config=${PATH_TO_CONFIG_FILE}"
+ * Just: "${PATH_TO_BINARY}/mission_controller_pioneer --Ice.Config=${PATH_TO_CONFIG_FILE}"
  *
  * \subsection running_ssec Once running
  *
@@ -85,10 +85,10 @@
 
 
 
-class mission_controller_giraff : public RoboComp::Application
+class mission_controller_pioneer : public RoboComp::Application
 {
 public:
-	mission_controller_giraff (QString prfx, bool startup_check) { prefix = prfx.toStdString(); this->startup_check_flag=startup_check; }
+	mission_controller_pioneer (QString prfx, bool startup_check) { prefix = prfx.toStdString(); this->startup_check_flag=startup_check; }
 private:
 	void initialize();
 	std::string prefix;
@@ -99,14 +99,14 @@ public:
 	virtual int run(int, char*[]);
 };
 
-void ::mission_controller_giraff::initialize()
+void ::mission_controller_pioneer::initialize()
 {
 	// Config file properties read example
 	// configGetString( PROPERTY_NAME_1, property1_holder, PROPERTY_1_DEFAULT_VALUE );
 	// configGetInt( PROPERTY_NAME_2, property1_holder, PROPERTY_2_DEFAULT_VALUE );
 }
 
-int ::mission_controller_giraff::run(int argc, char* argv[])
+int ::mission_controller_pioneer::run(int argc, char* argv[])
 {
 #ifdef USE_QTGUI
 	QApplication a(argc, argv);  // GUI application
@@ -250,7 +250,7 @@ int main(int argc, char* argv[])
 		}
 
 	}
-	::mission_controller_giraff app(prefix, startup_check_flag);
+	::mission_controller_pioneer app(prefix, startup_check_flag);
 
 	return app.main(argc, argv, configFile.toLocal8Bit().data());
 }

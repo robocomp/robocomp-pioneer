@@ -64,7 +64,6 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 void SpecificWorker::initialize(int period)
 {
 	std::cout << "Initialize worker" << std::endl;
-
 	this->Period = period;
 	if(this->startup_check_flag)
 		this->startup_check();
@@ -108,7 +107,7 @@ void SpecificWorker::initialize(int period)
                 //float x = 9835+11*340;
                 // float x = -3085;
                 //float y = -14043;
-                float x = 10143;//14963-13*340-400;//-3171;
+                float x = 9300; //10143;//14963-13*340-400;//-3171;
                 float y = 5525; //18225-13600+900;//-6680;
                 float z = 0;
                 float rx = 0;
@@ -158,6 +157,7 @@ void SpecificWorker::compute()
         auto virtual_frame = compute_virtual_frame();
         // get laser data from robot and call update_laser
         auto laser = read_laser_from_robot();
+        cout << "///// FIRST FOCALX"<< focalx << endl;
         update_virtual(virtual_frame, focalx, focaly);
         update_laser(laser);
     }
@@ -431,16 +431,16 @@ cv::Mat SpecificWorker::compute_virtual_frame()
             cout << "///////////////////  POS_z"<< waypoints_pos.z() << endl;
             cout << "///////////////////  CAM_HEIGHT"<< cam_api->get_height() << endl;
             cout << "///////////////////  CAM_WIDTH"<< cam_api->get_width() << endl;
-            cout << "///////////////////  FOCAL_X"<< cam_api->get_focal_x() << endl;
-            cout << "///////////////////  focal_y"<< cam_api->get_focal_y() << endl;
+            //cout << "///////////////////  FOCAL_X"<< cam_api->get_focal_x() << endl;
+            //cout << "///////////////////  focal_y"<< cam_api->get_focal_y() << endl;
            auto waycoords = cam_api->project(
                     Eigen::Vector3d( waypoints_pos.x(),  waypoints_pos.y(),
                                       waypoints_pos.z()), cam_api->get_width()/2, cam_api->get_height()/2);
            cout << "///////WAYCOORDS X" << waycoords[0] << endl;
             cout << "///////WAYCOORDS Y" << waycoords[1] << endl;
 
-            this->focalx = cdata_virtual.focalx;
-            this->focaly = cdata_virtual.focaly;
+            //this->focalx = cdata_virtual.focalx;
+            //this->focaly = cdata_virtual.focaly;
 
             vector<int> compression_params;
             compression_params.push_back(cv::IMWRITE_JPEG_QUALITY);
@@ -453,8 +453,6 @@ cv::Mat SpecificWorker::compute_virtual_frame()
                 cv::Point centerCircle2((int) waycoords[0], (int) waycoords[1] );
                 cv::Scalar colorCircle2(0, 233, 255);
                 cv::circle(virtual_frame, centerCircle2, radiusCircle, colorCircle2, thicknessCircle1);
-                cout << "TAMAÑO" << virtual_frame.cols << virtual_frame.rows;
-                cv::imshow("PRUEBA", virtual_frame);
 
             }
         }
@@ -469,7 +467,8 @@ cv::Mat SpecificWorker::compute_virtual_frame()
 }
 void SpecificWorker::update_virtual(const cv::Mat &v_image, float focalx, float focaly)
 {
-
+    cout << "/////////// FOCALX" << focalx << endl;
+    cout << "/////////// FOCALY" << focaly << endl;
     if( auto node = G->get_node(pioneer_camera_virtual_name); node.has_value())
     {
         std::vector<uint8_t> rgb; rgb.assign(v_image.data, v_image.data + v_image.total()*v_image.channels());
@@ -478,8 +477,8 @@ void SpecificWorker::update_virtual(const cv::Mat &v_image, float focalx, float 
         G->add_or_modify_attrib_local<cam_rgb_height_att>(node.value(), v_image.rows);
         G->add_or_modify_attrib_local<cam_rgb_depth_att>(node.value(), v_image.depth());
         G->add_or_modify_attrib_local<cam_rgb_cameraID_att>(node.value(), 3);
-        G->add_or_modify_attrib_local<cam_rgb_focalx_att>(node.value(), (int)focalx);
-        G->add_or_modify_attrib_local<cam_rgb_focaly_att>(node.value(), (int)focaly);
+        G->add_or_modify_attrib_local<cam_rgb_focalx_att>(node.value(), (int) focalx);
+        G->add_or_modify_attrib_local<cam_rgb_focaly_att>(node.value(), (int) focaly);
         G->add_or_modify_attrib_local<cam_rgb_alivetime_att>(node.value(), (int)std::chrono::time_point_cast<std::chrono::milliseconds>(MyClock::now()).time_since_epoch().count());
 
         G->update_node(node.value());

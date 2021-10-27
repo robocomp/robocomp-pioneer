@@ -104,7 +104,8 @@ class SpecificWorker : public GenericWorker
         void update_virtual(const cv::Mat &virtual_frame, float focalx, float focaly);
         std::optional<std::tuple<cv::Mat, std::vector<LaserPoint>>> compute_mosaic(int subsampling = 1);
         cv::Mat compute_virtual_frame();
-        float focalx, focaly;
+        float focalx = 424.0;
+        float focaly = 424.0;
         bool are_different(const vector<float> &a, const vector<float> &b, const vector<float> &epsilon);
         template <typename T>
         inline bool is_in_bounds(const T& value, const T& low, const T& high) { return !(value < low) && (value < high); }

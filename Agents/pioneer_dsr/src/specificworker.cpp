@@ -119,15 +119,11 @@ void SpecificWorker::initialize(int period)
             catch (const Ice::Exception &e) { std::cout << e.what() << std::endl; };
         }
         // get camera_api
-        if(auto cam_node = G->get_node(pioneer_camera_virtual_name); cam_node.has_value()){
-            cout << "ESTALLO" << endl;
+        if(auto cam_node = G->get_node(pioneer_camera_virtual_name); cam_node.has_value())
             cam_api = G->get_camera_api(cam_node.value());
-
-            }
         else
         {
             std::cout << "Controller-DSR terminate: could not find a camera node named " << pioneer_head_camera_right_name << std::endl;
-
             std::terminate();
         }
         auto rt = G->get_rt_api();
@@ -157,7 +153,6 @@ void SpecificWorker::compute()
         auto virtual_frame = compute_virtual_frame();
         // get laser data from robot and call update_laser
         auto laser = read_laser_from_robot();
-        cout << "///// FIRST FOCALX"<< focalx << endl;
         update_virtual(virtual_frame, focalx, focaly);
         update_laser(laser);
     }
@@ -416,7 +411,7 @@ cv::Mat SpecificWorker::compute_virtual_frame()
         if( auto node = G->get_node(waypoints_name); node.has_value()) {
           auto xpos = G->get_attrib_by_name<wayp_x_att>(node.value());
           auto ypos = G->get_attrib_by_name<wayp_y_att>(node.value());
-//            cout << "PRUEBA" << xpos.value() << endl;
+//
             if( auto parent = G->get_parent_node(node.value()); parent.has_value()) {
                 auto edge = rt->get_edge_RT(parent.value(), node.value().id()).value();
                 G->modify_attrib_local<rt_rotation_euler_xyz_att>(edge, std::vector<float>{0.0, 0.0, 0.0});
@@ -426,18 +421,10 @@ cv::Mat SpecificWorker::compute_virtual_frame()
             }
 
            auto waypoints_pos = inner_eigen->transform(pioneer_camera_virtual_name ,waypoints_name ).value();
-           cout << "///////////////////  POS_x"<< waypoints_pos.x() << endl;
-            cout << "///////////////////  POS_y"<< waypoints_pos.y() << endl;
-            cout << "///////////////////  POS_z"<< waypoints_pos.z() << endl;
-            cout << "///////////////////  CAM_HEIGHT"<< cam_api->get_height() << endl;
-            cout << "///////////////////  CAM_WIDTH"<< cam_api->get_width() << endl;
-            //cout << "///////////////////  FOCAL_X"<< cam_api->get_focal_x() << endl;
-            //cout << "///////////////////  focal_y"<< cam_api->get_focal_y() << endl;
            auto waycoords = cam_api->project(
                     Eigen::Vector3d( waypoints_pos.x(),  waypoints_pos.y(),
                                       waypoints_pos.z()), cam_api->get_width()/2, cam_api->get_height()/2);
-           cout << "///////WAYCOORDS X" << waycoords[0] << endl;
-            cout << "///////WAYCOORDS Y" << waycoords[1] << endl;
+
 
             //this->focalx = cdata_virtual.focalx;
             //this->focaly = cdata_virtual.focaly;
@@ -467,8 +454,6 @@ cv::Mat SpecificWorker::compute_virtual_frame()
 }
 void SpecificWorker::update_virtual(const cv::Mat &v_image, float focalx, float focaly)
 {
-    cout << "/////////// FOCALX" << focalx << endl;
-    cout << "/////////// FOCALY" << focaly << endl;
     if( auto node = G->get_node(pioneer_camera_virtual_name); node.has_value())
     {
         std::vector<uint8_t> rgb; rgb.assign(v_image.data, v_image.data + v_image.total()*v_image.channels());

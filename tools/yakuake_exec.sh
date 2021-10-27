@@ -52,7 +52,6 @@ qdbus org.kde.yakuake /yakuake/sessions runCommandInTerminal 7 "ssh -X pioneernu
 qdbus org.kde.yakuake /yakuake/sessions runCommandInTerminal 8 "ssh -X pioneernuc@pioneernuc.local"
 qdbus org.kde.yakuake /yakuake/sessions runCommandInTerminal 9 "ssh -X pioneernuc@pioneernuc.local"
 qdbus org.kde.yakuake /yakuake/sessions runCommandInTerminal 11 "ssh -X pioneernuc@pioneernuc.local"
-qdbus org.kde.yakuake /yakuake/sessions runCommandInTerminal 12 "ssh -X pioneernuc@pioneernuc.local"
 qdbus org.kde.yakuake /yakuake/sessions runCommandInTerminal 13 "ssh -X pioneernuc@pioneernuc.local"
 qdbus org.kde.yakuake /yakuake/sessions runCommandInTerminal 14 "ssh -X pioneernuc@pioneernuc.local"
 qdbus org.kde.yakuake /yakuake/sessions runCommandInTerminal 15 "ssh -X pioneernuc@pioneernuc.local"
@@ -72,7 +71,7 @@ qdbus org.kde.yakuake /yakuake/sessions runCommandInTerminal 17 "cd robocomp/com
 
 ##Realsense SLAM
 qdbus org.kde.yakuake /yakuake/sessions runCommandInTerminal 17 "cd robocomp/components/robocomp-pioneer/components/realsensePoseEstimation/"
-qdbus org.kde.yakuake /yakuake/sessions runCommandInTerminal 17 "bin/realSensePoseEstimation etc/config"
+qdbus org.kde.yakuake /yakuake/sessions runCommandInTerminal 17 "bin/realSensePoseEstimation etc/config_side"
 
 ##Pioneer-Viewer
 qdbus org.kde.yakuake /yakuake/sessions runCommandInTerminal 16 "cd robocomp/components/robocomp-robolab/components/viewers/pioneer_viewer/"
@@ -89,11 +88,11 @@ qdbus org.kde.yakuake /yakuake/sessions runCommandInTerminal 10 "bin/camera_simp
 
 #LASER I
 qdbus org.kde.yakuake /yakuake/sessions runCommandInTerminal 12 "cd ~/robocomp/components/robocomp-pioneer/Agents/mission_controller_pioneer"
-qdbus org.kde.yakuake /yakuake/sessions runCommandInTerminal 12 "src/hokuyo_python.py etc/config_back"
+qdbus org.kde.yakuake /yakuake/sessions runCommandInTerminal 12 "bin/mission_controller_pioneer etc/config"
 
 #LASER 2
 qdbus org.kde.yakuake /yakuake/sessions runCommandInTerminal 14 "cd ~/robocomp/components/robocomp-pioneer/components/hokuyo_python"
-qdbus org.kde.yakuake /yakuake/sessions runCommandInTerminal 14 "bin/mission_controller_pioneer etc/config"
+qdbus org.kde.yakuake /yakuake/sessions runCommandInTerminal 14 "src/hokuyo_python.py etc/config_front"
 
 #LASER INTEGRATOR
 qdbus org.kde.yakuake /yakuake/sessions runCommandInTerminal 13 "cd ~/robocomp/components/robocomp-pioneer/components/laser-integrator"

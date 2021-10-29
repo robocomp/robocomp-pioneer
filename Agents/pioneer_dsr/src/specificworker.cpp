@@ -23,7 +23,8 @@
 #include <iostream>
 #include <fstream>
 #include <time.h>
-
+#include <math.h>
+#include <iomanip>
 
 /**
 * \brief Default constructor
@@ -401,13 +402,17 @@ std::optional<std::tuple<cv::Mat, std::vector<SpecificWorker::LaserPoint>>> Spec
 }
 cv::Mat SpecificWorker::compute_virtual_frame()
 {
+    RoboCompFullPoseEstimation::FullPoseEuler pose;
     RoboCompCameraRGBDSimple::TImage cdata_virtual;
     cv::Mat virtual_frame;
     try
     {
+        pose = fullposeestimation_proxy->getFullPoseEuler();
+
         int radiusCircle = 30;
         int thicknessCircle1 = 2;
         cdata_virtual = camerargbdsimple_proxy->getImage("pioneer_camera_virtual");
+
         if( auto node = G->get_node(waypoints_name); node.has_value()) {
           auto xpos = G->get_attrib_by_name<wayp_x_att>(node.value());
           auto ypos = G->get_attrib_by_name<wayp_y_att>(node.value());
@@ -425,23 +430,31 @@ cv::Mat SpecificWorker::compute_virtual_frame()
                     Eigen::Vector3d( waypoints_pos.x(),  waypoints_pos.y(),
                                       waypoints_pos.z()), cam_api->get_width()/2, cam_api->get_height()/2);
 
-
             //this->focalx = cdata_virtual.focalx;
             //this->focaly = cdata_virtual.focaly;
 
             vector<int> compression_params;
             compression_params.push_back(cv::IMWRITE_JPEG_QUALITY);
             compression_params.push_back(50);
-            //qInfo() <<"1: "<< m.cols*m.rows*3;
 
             if(!cdata_virtual.image.empty()) {
+                ///CÍRCULO
                 cv::imdecode(cdata_virtual.image, 1, &virtual_frame);
                 cv::cvtColor(virtual_frame, virtual_frame, cv::COLOR_BGR2RGB);
                 cv::Point centerCircle2((int) waycoords[0], (int) waycoords[1] );
                 cv::Scalar colorCircle2(0, 233, 255);
-                cv::circle(virtual_frame, centerCircle2, radiusCircle, colorCircle2, thicknessCircle1);
+                cv::circle(virtual_frame, centerCircle2, radiusCircle, colorCircle2, cv::FILLED);
 
+                ///ETIQUETA
+                float distancia = sqrt(pow((pose.x - xpos.value()*1.0), 2) + pow((pose.y - ypos.value()*1.0), 2))/1000; //en metros
+                std::stringstream d;
+                d << std::fixed << std::setprecision(2) << distancia;
+                std::string dist = d.str();
+                cv::Scalar colorText(0, 0, 0);
+                cv::Point centerText((int) waycoords[0]-23, (int) waycoords[1]+5);
+                cv::putText(virtual_frame,dist,centerText,cv::FONT_ITALIC,0.6,colorText,2,false);
             }
+
         }
         }
 

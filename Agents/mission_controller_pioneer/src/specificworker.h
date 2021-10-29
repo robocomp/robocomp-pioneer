@@ -39,7 +39,16 @@
 #include "ui_mission_pathfollowUI.h"
 #include "/home/robocomp/robocomp/classes/abstract_graphic_viewer/abstract_graphic_viewer.h"
 #include <Eigen/Geometry>
-
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <fstream>
+#include <vector>
+#include <utility> // std::pair
+#include <stdexcept> // std::runtime_error
+#include <sstream> // std::stringstream
+//#include <QJsonArray>
+//#include <json/include/nlohmann/json.hpp>
 
 class SpecificWorker : public GenericWorker
 {
@@ -57,6 +66,7 @@ public slots:
     void slot_stop_mission();
     void slot_cancel_mission();
     void slot_change_mission_selector(int);
+    void slot_change_route_selector(int);
     void trace_button_slot(bool);
 
 private:
@@ -122,6 +132,7 @@ private:
     DoubleBuffer<std::vector<Eigen::Vector3d>,std::vector<Eigen::Vector3d>> path_buffer;
     void draw_path(std::vector<Eigen::Vector2f> &path, QGraphicsScene* viewer_2d, bool remove = false);
     void follow_path_copy_path_to_graph(const std::vector<float> &x_values, const std::vector<float> &y_values);
+    std::tuple<std::vector<float>, std::vector<float>>  load_path(string filename);
 };
 
 #endif

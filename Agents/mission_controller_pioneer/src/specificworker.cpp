@@ -52,6 +52,7 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 	qscene_2d_view = params["2d_view"].value == "true";
 	osg_3d_view = params["3d_view"].value == "true";
 
+
 	return true;
 }
 
@@ -295,7 +296,7 @@ void SpecificWorker::create_path_mission()
                 }
                 draw_path(local_path, &pathfollow_draw_widget->scene);
             };
-    //draw_circle(); // it starts with the circle button selected
+
     auto draw_oval = [this]()
     {
         // remove curent drawing
@@ -337,8 +338,8 @@ void SpecificWorker::create_path_mission()
         }
         for(auto &&alfa : iter::range(3*M_PI/2.0, M_PI/2, -(double)(arco/short_radio)))
         {
-            float x = short_radio * cos(alfa) - long_radio/2;
-            float y = short_radio * sin(alfa);
+            float x = short_radio * cos(alfa) - long_radio/2+ robot_pose.x();
+            float y = short_radio * sin(alfa)+ robot_pose.y();
             temporary_plan.x_path.push_back(x);
             temporary_plan.y_path.push_back(y);
             local_path.emplace_back(Eigen::Vector2f(x, y));
@@ -353,10 +354,42 @@ void SpecificWorker::create_path_mission()
         }
         draw_path(local_path, &pathfollow_draw_widget->scene);
     };
-    //draw_oval();
+
+    auto draw_waypoints = [this] ()
+    {
+        //List of routes
+        pathfollow_dialog.list_routes->addItem("Select a route");
+        pathfollow_dialog.list_routes->addItem("Route 1");
+        pathfollow_dialog.list_routes->addItem("Route 2");
+        pathfollow_dialog.list_routes->addItem("Route 3");
+        connect(pathfollow_dialog.list_routes, SIGNAL(currentIndexChanged(int)), this , SLOT(slot_change_route_selector(int)));
+
+        // remove current drawing
+        std::vector<Eigen::Vector2f> fake_path;
+        draw_path(fake_path, &pathfollow_draw_widget->scene, true);
+        draw_path(fake_path, &widget_2d->scene, true);
+
+        temporary_plan.x_path.clear();
+        temporary_plan.y_path.clear();
+        std::vector<Eigen::Vector2f> local_path;  // for drawing
+        auto [x, y] = load_path("etc/test.csv");
+        for(int i = 0; i <= x.size() ; i++)
+        {
+            cout << x[i] << endl;
+            float x_pos = x[i];
+            float y_pos = y[i];
+            temporary_plan.x_path.push_back(x_pos);
+            temporary_plan.y_path.push_back(y_pos);
+            local_path.emplace_back(Eigen::Vector2f(x_pos, y_pos));
+        }
+        draw_path(local_path, &pathfollow_draw_widget->scene);
+
+
+    };
+
 
     connect(pathfollow_dialog.button_group, QOverload<QAbstractButton *>::of(&QButtonGroup::buttonClicked),
-            [this, draw_circle, draw_oval](QAbstractButton *button)
+            [this, draw_circle, draw_oval, draw_waypoints](QAbstractButton *button)
             {
                 if(button == pathfollow_dialog.circle_radio_button)
                 {
@@ -367,6 +400,11 @@ void SpecificWorker::create_path_mission()
                 {
                     qInfo() << __FUNCTION__ << " oval selected";
                     draw_oval();
+                }
+                else if(button == pathfollow_dialog.waypoints_button)
+                {
+                    qInfo() << __FUNCTION__ << " waypoints selected";
+                    draw_waypoints();
                 }
             });
 
@@ -379,10 +417,10 @@ void SpecificWorker::create_path_mission()
     {
         draw_oval();
     });
-    connect(pathfollow_dialog.oval_long_radius_slider, qOverload<int>(&QSlider::valueChanged),[draw_oval](int v)
-    {
+    connect(pathfollow_dialog.oval_long_radius_slider, qOverload<int>(&QSlider::valueChanged),[draw_oval](int v)    {
         draw_oval();
     });
+
 }
 
 void SpecificWorker::create_goto_mission() {
@@ -667,6 +705,104 @@ void SpecificWorker::slot_change_mission_selector(int index)
             break;
     }
 }
+
+void SpecificWorker::slot_change_route_selector(int index)
+{
+    // remove current filling_plan and create a new one
+    //slot_stop_mission();
+    // createa new current filling_plan of the index typw
+
+
+    switch(index)
+    {
+        case 1: {
+            auto [x, y] = load_path("etc/test.csv");
+            //std::string name;
+            //std::vector<std::pair<std::string, std::vector<int>>> two_cols = read_csv("etc/test.csv");
+            //cout << "///////////// CSV" << two_cols.size() << endl;
+
+//            if (f_ent.is_open()) {
+//                std::cout << etc_path << " se ha abierto correctamente " << std::endl;
+//                //std::vector<unsigned char> cadena;
+//                QJsonArray aux = f_ent.;
+//                while (f_ent.get(aux)) {
+//                    cadena.push_back(aux);
+//                    std::cout<<aux;
+//                }
+//
+//            }
+//            else{
+//                cout << "NO FUNCIONA" <<endl;
+//            }
+//
+//            f_ent.close(); ///Cerramos el .json
+//            //Cargo el .csv con los waypoints de la ruta 1
+            break;
+        }
+        case 2:{
+            std::string name;
+            ifstream f_ent;
+            name = "route1.geojson";
+            std::string etc_path = name;
+            cout << "Cargo primera ruta" << endl;
+            f_ent.open("etc/" + etc_path + ".json");
+
+            if (f_ent.is_open()) {
+                std::cout << etc_path << ".json" << " se ha abierto correctamente" << std::endl;
+                std::vector<unsigned char> cadena;
+                char aux = ' ';
+                while (f_ent.get(aux)) {
+                    cadena.push_back(aux);
+                    //std::cout<<aux;
+                }
+            }
+
+            f_ent.close(); ///Cerramos el .json
+            //Cargo el .csv con los waypoints de la ruta 1
+            break;
+        }
+        case 3:{
+            std::string name;
+            ifstream f_ent;
+            name = "route1.geojson";
+            std::string etc_path = name;
+            cout << "Cargo primera ruta" << endl;
+            f_ent.open("etc/" + etc_path + ".json");
+
+            if (f_ent.is_open()) {
+                std::cout << etc_path << ".json" << " se ha abierto correctamente" << std::endl;
+                std::vector<unsigned char> cadena;
+                char aux = ' ';
+                while (f_ent.get(aux)) {
+                    cadena.push_back(aux);
+                    //std::cout<<aux;
+                }
+            }
+
+            f_ent.close(); ///Cerramos el .json
+            //Cargo el .csv con los waypoints de la ruta 1
+            break;
+        }
+    }
+}
+
+
+std::tuple<std::vector<float>, std::vector<float>> SpecificWorker::load_path(string filename)
+{
+    ifstream fin;
+    fin.open(filename);
+    string x, y;
+    vector<float> x_vec, y_vec;
+    while(!fin.eof()){
+        getline(fin, x, ',');
+        getline(fin, y);
+        x_vec.push_back(atof(x.c_str()));
+        y_vec.push_back(atof(y.c_str()));
+    }
+    fin.close();
+    return make_tuple(x_vec, y_vec);
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////
 /// Auxiliary methods
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -714,7 +850,7 @@ void SpecificWorker::draw_path(std::vector<Eigen::Vector2f> &path, QGraphicsScen
             if(i == 1 or i == path.size()-1)
                 color = "#00FF00"; //Green
 
-            line1 = viewer_2d->addLine(qsegment, QPen(QBrush(QColor(QString::fromStdString(color))), 20));
+            line1 = viewer_2d->addLine(qsegment, QPen(QBrush(QColor(QString::fromStdString(color))), 500));
             line2 = viewer_2d->addLine(qsegment_perp, QPen(QBrush(QColor(QString::fromStdString("#F0FF00"))), 20));
             line1->setZValue(2000);
             line2->setZValue(2000);

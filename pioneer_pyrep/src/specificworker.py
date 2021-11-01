@@ -555,5 +555,24 @@ class SpecificWorker(GenericWorker):
     #
     def Laser_getLaserData(self):
         return self.ldata_read
-    # ===================================================================
-    # ===================================================================
+    #
+    # IMPLEMENTATION of getData method from GpsUblox interface
+    #
+    def GpsUblox_getData(self):
+        ret = RoboCompGpsUblox.DatosGPS()
+        ret.latitude = 0
+        ret.longitude = 0
+        ret.altitude = 0
+        ret.UYMx = 0
+        ret.UTMy = 0
+        ret.mapx = self.robot_full_pose_read.x
+        ret.mapy = self.robot_full_pose_read.y
+        return ret
+
+    #
+    # IMPLEMENTATION of setInitialPose method from GpsUblox interface
+    #
+    def GpsUblox_setInitialPose(self, x, y):
+        pass
+
+

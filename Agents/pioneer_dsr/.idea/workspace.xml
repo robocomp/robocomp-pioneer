@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="CMakeRunConfigurationManager" shouldGenerate="true" shouldDeleteObsolete="true">
-    <generated />
+    <generated>
+      <config projectName="pioneer_dsr" targetName="pioneer_dsr" />
+      <config projectName="pioneer_dsr" targetName="pioneer_dsr_autogen" />
+      <config projectName="pioneer_dsr" targetName="ICES__home_pbustos_robocomp_components_robocomp-pioneer_Agents_pioneer_dsr_src" />
+    </generated>
   </component>
   <component name="CMakeSettings">
     <configurations>
@@ -13,37 +17,31 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="da21ecd3-54f3-4392-8da7-df59bee83b0b" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../mission_controller_pioneer/src/specificworker.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../mission_controller_pioneer/src/specificworker.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../mission_controller_pioneer/src/specificworker.h" beforeDir="false" afterPath="$PROJECT_DIR$/../mission_controller_pioneer/src/specificworker.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../pioneer_pyrep/src/gpsubloxI.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../components/pioneer_robot/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../components/pioneer_robot/CMakeCache.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../components/pioneer_robot/CMakeFiles/3.16.3/CMakeSystem.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../../components/pioneer_robot/CMakeFiles/3.16.3/CMakeSystem.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../components/pioneer_robot/CMakeFiles/3.19.2/CMakeSystem.cmake" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../components/pioneer_robot/CMakeFiles/3.19.2/CompilerIdC/CMakeCCompilerId.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../components/pioneer_robot/CMakeFiles/3.19.2/CompilerIdCXX/CMakeCXXCompilerId.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../components/pioneer_robot/CMakeFiles/3.20.2/CMakeSystem.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../../components/pioneer_robot/CMakeFiles/3.20.2/CMakeSystem.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../components/pioneer_robot/CMakeFiles/CMakeDirectoryInformation.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../../components/pioneer_robot/CMakeFiles/CMakeDirectoryInformation.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../components/pioneer_robot/CMakeFiles/CMakeError.log" beforeDir="false" afterPath="$PROJECT_DIR$/../../components/pioneer_robot/CMakeFiles/CMakeError.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../components/pioneer_robot/CMakeFiles/CMakeOutput.log" beforeDir="false" afterPath="$PROJECT_DIR$/../../components/pioneer_robot/CMakeFiles/CMakeOutput.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../components/pioneer_robot/CMakeFiles/CMakeRuleHashes.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../components/pioneer_robot/CMakeFiles/CMakeRuleHashes.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../components/pioneer_robot/CMakeFiles/Makefile.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../../components/pioneer_robot/CMakeFiles/Makefile.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../components/pioneer_robot/CMakeFiles/Makefile2" beforeDir="false" afterPath="$PROJECT_DIR$/../../components/pioneer_robot/CMakeFiles/Makefile2" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../components/pioneer_robot/CMakeFiles/TargetDirectories.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../components/pioneer_robot/CMakeFiles/TargetDirectories.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../components/pioneer_robot/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/../../components/pioneer_robot/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../components/pioneer_robot/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/../../components/pioneer_robot/Testing/Temporary/LastTest.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../components/pioneer_robot/cmake-build-debug/CMakeFiles/clion-log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../components/pioneer_robot/cmake-build-debug/CMakeFiles/clion-log.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../components/pioneer_robot/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../../components/pioneer_robot/cmake_install.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../components/pioneer_robot/pioneer.cbp" beforeDir="false" afterPath="$PROJECT_DIR$/../../components/pioneer_robot/pioneer.cbp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../components/pioneer_robot/src/CMakeFiles/CMakeDirectoryInformation.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../../components/pioneer_robot/src/CMakeFiles/CMakeDirectoryInformation.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../components/pioneer_robot/src/CMakeFiles/pioneer.dir/DependInfo.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../../components/pioneer_robot/src/CMakeFiles/pioneer.dir/DependInfo.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../components/pioneer_robot/src/CMakeFiles/pioneer.dir/build.make" beforeDir="false" afterPath="$PROJECT_DIR$/../../components/pioneer_robot/src/CMakeFiles/pioneer.dir/build.make" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../components/pioneer_robot/src/CMakeFiles/pioneer.dir/cmake_clean.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../../components/pioneer_robot/src/CMakeFiles/pioneer.dir/cmake_clean.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../components/pioneer_robot/src/CMakeFiles/pioneer.dir/flags.make" beforeDir="false" afterPath="$PROJECT_DIR$/../../components/pioneer_robot/src/CMakeFiles/pioneer.dir/flags.make" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../components/pioneer_robot/src/CMakeFiles/pioneer.dir/link.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../components/pioneer_robot/src/CMakeFiles/pioneer.dir/link.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../components/pioneer_robot/src/CMakeFiles/pioneer_autogen.dir/AutogenInfo.json" beforeDir="false" afterPath="$PROJECT_DIR$/../../components/pioneer_robot/src/CMakeFiles/pioneer_autogen.dir/AutogenInfo.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../components/pioneer_robot/src/CMakeFiles/pioneer_autogen.dir/build.make" beforeDir="false" afterPath="$PROJECT_DIR$/../../components/pioneer_robot/src/CMakeFiles/pioneer_autogen.dir/build.make" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../components/pioneer_robot/src/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/../../components/pioneer_robot/src/Makefile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../components/pioneer_robot/src/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/../../components/pioneer_robot/src/cmake_install.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeCache.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeCache.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Testing/Temporary/LastTest.log" beforeDir="false" afterPath="$PROJECT_DIR$/Testing/Temporary/LastTest.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/cmake_install.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/etc/config" beforeDir="false" afterPath="$PROJECT_DIR$/etc/config" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/etc/config_coppelia" beforeDir="false" afterPath="$PROJECT_DIR$/etc/config_coppelia" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pioneer_dsr.cbp" beforeDir="false" afterPath="$PROJECT_DIR$/pioneer_dsr.cbp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/CMakeListsSpecific.txt" beforeDir="false" afterPath="$PROJECT_DIR$/src/CMakeListsSpecific.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Makefile" beforeDir="false" afterPath="$PROJECT_DIR$/src/Makefile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/cmake_install.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/src/cmake_install.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/specificworker.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/src/specificworker.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../components/reelay-testzone/src/CMakeListsSpecific.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../components/reelay-testzone/src/CMakeListsSpecific.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../components/reelay-testzone/src/specificworker.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../../components/reelay-testzone/src/specificworker.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../components/reelay-testzone/src/specificworker.h" beforeDir="false" afterPath="$PROJECT_DIR$/../../components/reelay-testzone/src/specificworker.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../etc/exterior-robolab.ttt" beforeDir="false" afterPath="$PROJECT_DIR$/../../etc/exterior-robolab.ttt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../pioneer_pyrep/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../pioneer_pyrep/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../pioneer_pyrep/etc/config" beforeDir="false" afterPath="$PROJECT_DIR$/../../pioneer_pyrep/etc/config" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../pioneer_pyrep/src/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../pioneer_pyrep/src/CMakeLists.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../pioneer_pyrep/src/genericworker.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../pioneer_pyrep/src/genericworker.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../pioneer_pyrep/src/pioneerPyrep.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../pioneer_pyrep/src/pioneerPyrep.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../pioneer_pyrep/src/specificworker.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../pioneer_pyrep/src/specificworker.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../safdsadsasa.txt" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,16 +52,17 @@
     <option name="clangTidyViaClangd" value="false" />
     <option name="formatViaClangd" value="false" />
   </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Default" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file:///usr/include/c++/10/bits/stl_iterator.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/genericworker.h" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/src/specificworker.cpp" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../../../../libs/dsr/core/include/dsr/core/types/type_checking/dsr_attr_name.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/genericworker.cpp" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file:///usr/include/c++/10/bits/stl_iterator.h" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/src/specificworker.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/genericworker.h" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/src/specificworker.cpp" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="ProjectId" id="1uceMQXnSZdUQtdvor31oGgUwFR" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
@@ -80,18 +79,43 @@
     <property name="cf.first.check.clang-format" value="false" />
     <property name="cidr.known.project.marker" value="true" />
     <property name="cmake.loaded.for.project" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../dsr-graph/components/idserver" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
   </component>
-  <component name="RunManager">
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+  <component name="RunManager" selected="CMake Application.pioneer_dsr">
+    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ICES__home_pbustos_robocomp_components_robocomp-pioneer_Agents_pioneer_dsr_src" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="pioneer_dsr" TARGET_NAME="ICES__home_pbustos_robocomp_components_robocomp-pioneer_Agents_pioneer_dsr_src" CONFIG_NAME="Default">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="pioneer_dsr" type="CMakeRunConfiguration" factoryName="Application" PROGRAM_PARAMS="etc/config_coppelia" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" WORKING_DIR="file://$PROJECT_DIR$" PASS_PARENT_ENVS_2="true" PROJECT_NAME="pioneer_dsr" TARGET_NAME="pioneer_dsr" CONFIG_NAME="Default" RUN_TARGET_PROJECT_NAME="pioneer_dsr" RUN_TARGET_NAME="pioneer_dsr">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="pioneer_dsr_autogen" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="pioneer_dsr" TARGET_NAME="pioneer_dsr_autogen" CONFIG_NAME="Default">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="GradleAppRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
+      <method v="2">
+        <option name="com.jetbrains.cidr.cpp.gradle.execution.GradleNativeBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="CMake Application.ICES__home_pbustos_robocomp_components_robocomp-pioneer_Agents_pioneer_dsr_src" />
+      <item itemvalue="CMake Application.pioneer_dsr" />
+      <item itemvalue="CMake Application.pioneer_dsr_autogen" />
+    </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -140,6 +164,7 @@
       <workItem from="1635323100590" duration="5615000" />
       <workItem from="1635407048129" duration="12840000" />
       <workItem from="1635489283129" duration="3161000" />
+      <workItem from="1635803943835" duration="2010000" />
     </task>
     <servers />
   </component>

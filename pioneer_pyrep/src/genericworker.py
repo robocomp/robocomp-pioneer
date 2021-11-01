@@ -54,7 +54,8 @@ Ice.loadSlice("-I ./src/ --all ./src/BatteryStatus.ice")
 import RoboCompBatteryStatus
 Ice.loadSlice("-I ./src/ --all ./src/RSSIStatus.ice")
 import RoboCompRSSIStatus
-
+Ice.loadSlice("-I ./src/ --all ./src/GpsUblox.ice")
+import RoboCompGpsUblox
 
 import camerargbdsimpleI 
 import laserI 
@@ -65,6 +66,7 @@ import fullposeestimationI
 import ultrasoundI
 import batterystatusI
 import rssistatusI
+import gpsubloxI
 
 class GenericWorker():
 

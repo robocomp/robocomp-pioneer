@@ -10,7 +10,6 @@ LaserProxy = laser:tcp -h localhost -p 10003
 RSSIStatusProxy = rssistatus:tcp -h localhost -p 0
 UltrasoundProxy = ultrasound:tcp -h localhost -p 0
 
-
 agent_id = 0 # Change id
 agent_name = pioneer_dsr
 tree_view = true

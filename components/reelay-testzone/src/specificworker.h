@@ -22,14 +22,13 @@
 	@author authorname
 */
 
-
-
 #ifndef SPECIFICWORKER_H
 #define SPECIFICWORKER_H
 
 #include <genericworker.h>
 #include <innermodel/innermodel.h>
 #include <reelay/monitors.hpp>
+
 
 class SpecificWorker : public GenericWorker
 {

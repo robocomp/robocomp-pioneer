@@ -153,8 +153,6 @@ if __name__ == '__main__':
     laserpubTopic = RoboCompLaserPub.LaserPubPrx.uncheckedCast(pub)
     mprx["LaserPubPub"] = laserpubTopic
 
-
-
     if status == 0:
         worker = SpecificWorker(mprx)
         worker.setParams(parameters)
@@ -188,6 +186,10 @@ if __name__ == '__main__':
 
     adapter = ic.createObjectAdapter('RSSIStatus')
     adapter.add(rssistatusI.RSSIStatusI(worker), ic.stringToIdentity('rssistatus'))
+    adapter.activate()
+
+    adapter = ic.createObjectAdapter('GpsUblox')
+    adapter.add(gpsubloxI.GpsUbloxI(worker), ic.stringToIdentity('gpsublox'))
     adapter.activate()
 
     adapter = ic.createObjectAdapter('CoppeliaUtils')

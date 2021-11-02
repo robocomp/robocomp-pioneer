@@ -162,12 +162,24 @@ void SpecificWorker::compute()
     }
     else // Coppelia
     {
-//        if (auto res = compute_mosaic(); res.has_value())
+        try
         {
+            auto virtual_frame = camerargbdsimple_proxy->getImage("pioneer_virtual_camera");
+            cv::Mat virtual_image;
+            cv::imdecode(virtual_frame.image, 1, &virtual_image);
+            cv::cvtColor(virtual_image, virtual_image, cv::COLOR_BGR2RGB);
+            qInfo() << __FUNCTION__ <<virtual_image.cols << virtual_image.rows;
+            //cv::imshow("dd", virtual_image);
+            //cv::waitKey(1);
+            update_virtual(virtual_image, virtual_frame.focalx, virtual_frame.focaly);
+        }
+        catch(const Ice::Exception &e){std::cout << e.what() << " - Error reading image" << std::endl;}
+ //       if (auto res = compute_mosaic(); res.has_value())
+ //       {
 //            auto &[virtual_frame, laser] = res.value();
 //            update_virtual(virtual_frame, focalx, focaly);
 //            update_laser(laser);
-        }
+//        }
     }
 }
 
@@ -460,9 +472,6 @@ cv::Mat SpecificWorker::compute_virtual_frame()
         }
         }
 
-
-
-
     catch (const Ice::Exception &e){ std::cout << e.what() << std::endl;}
 
     return virtual_frame;
@@ -480,7 +489,6 @@ void SpecificWorker::update_virtual(const cv::Mat &v_image, float focalx, float 
         G->add_or_modify_attrib_local<cam_rgb_focalx_att>(node.value(), (int) focalx);
         G->add_or_modify_attrib_local<cam_rgb_focaly_att>(node.value(), (int) focaly);
         G->add_or_modify_attrib_local<cam_rgb_alivetime_att>(node.value(), (int)std::chrono::time_point_cast<std::chrono::milliseconds>(MyClock::now()).time_since_epoch().count());
-
         G->update_node(node.value());
     }
     else
@@ -554,10 +562,9 @@ void SpecificWorker::update_robot_localization_gps()
     {
         pose = fullposeestimation_proxy->getFullPoseEuler();
         map = gpsublox_proxy->getData();
-        qInfo() << __FUNCTION__ << " mapx" << map.mapx;
-        qInfo() << __FUNCTION__ << " mapY" << map.mapy;
-
-        qInfo() << "X:" << pose.x  << "// Y:" << pose.y << "// Z:" << pose.z << "// RX:" << pose.rx << "// RY:" << pose.ry << "// RZ:" << pose.rz;
+        //qInfo() << __FUNCTION__ << " mapx" << map.mapx;
+        //qInfo() << __FUNCTION__ << " mapY" << map.mapy;
+        //qInfo() << "X:" << pose.x  << "// Y:" << pose.y << "// Z:" << pose.z << "// RX:" << pose.rx << "// RY:" << pose.ry << "// RZ:" << pose.rz;
     }
     catch(const Ice::Exception &e){ std::cout << e.what() <<  __FUNCTION__ << std::endl;};
 
@@ -634,7 +641,7 @@ void SpecificWorker::update_gps()
     try
     {
         auto gps_state = gpsublox_proxy->getData();
-        qInfo() << __FUNCTION__ << "ENTROOOOOO" ;
+        //qInfo() << __FUNCTION__ << "ENTROOOOOO" ;
         if( auto gps = G->get_node(gps_name); gps.has_value())
         {
             G->add_or_modify_attrib_local<gps_latitude_att>(gps.value(), (float)gps_state.latitude);
@@ -643,8 +650,8 @@ void SpecificWorker::update_gps()
             G->add_or_modify_attrib_local<gps_map_y_att>(gps.value(), (float)gps_state.mapy);
             G->update_node(gps.value());
         }
-        qInfo() << __FUNCTION__ << " UTMx" << gps_state.UTMx;
-        qInfo() << __FUNCTION__ << " UTMY" << gps_state.UTMy;
+        //qInfo() << __FUNCTION__ << " UTMx" << gps_state.UTMx;
+        //qInfo() << __FUNCTION__ << " UTMY" << gps_state.UTMy;
     }
     catch(const Ice::Exception &e) { std::cout << e.what() << std::endl;}
 }

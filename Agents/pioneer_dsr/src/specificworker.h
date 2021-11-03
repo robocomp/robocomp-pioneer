@@ -96,6 +96,7 @@ class SpecificWorker : public GenericWorker
         using Point = std::pair<float, float>;
         struct LaserPoint{ float dist; float angle;};
         std::vector<LaserPoint> read_laser_from_robot();
+        void read_laser_from_coppelia_and_update();
         void update_laser(const std::vector<LaserPoint> &laser_data);
         QPolygonF filter_laser(const std::vector<SpecificWorker::LaserPoint> &ldata);
         void ramer_douglas_peucker(const std::vector<Point> &pointList, double epsilon, std::vector<Point> &out);

@@ -161,26 +161,17 @@ void SpecificWorker::compute()
         update_laser(laser);
     }
     else // Coppelia
-    {
         try
         {
             auto virtual_frame = camerargbdsimple_proxy->getImage("pioneer_virtual_camera");
             cv::Mat virtual_image;
             cv::imdecode(virtual_frame.image, 1, &virtual_image);
             cv::cvtColor(virtual_image, virtual_image, cv::COLOR_BGR2RGB);
-            qInfo() << __FUNCTION__ <<virtual_image.cols << virtual_image.rows;
-            //cv::imshow("dd", virtual_image);
-            //cv::waitKey(1);
-            update_virtual(virtual_image, virtual_frame.focalx, virtual_frame.focaly);
+            //qInfo() << __FUNCTION__ << virtual_frame.focalx;
+            update_virtual(virtual_image, focalx, focaly);
+            read_laser_from_coppelia_and_update();
         }
         catch(const Ice::Exception &e){std::cout << e.what() << " - Error reading image" << std::endl;}
- //       if (auto res = compute_mosaic(); res.has_value())
- //       {
-//            auto &[virtual_frame, laser] = res.value();
-//            update_virtual(virtual_frame, focalx, focaly);
-//            update_laser(laser);
-//        }
-    }
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -190,7 +181,8 @@ std::vector<SpecificWorker::LaserPoint> SpecificWorker::read_laser_from_robot()
     std::vector<LaserPoint> laser_data;
     std::vector<LaserPoint> laser_data_back;
 
-    try {
+    try
+    {
         auto laser = laser_proxy->getLaserData();
         auto laser_back = laser1_proxy->getLaserData();
         //for(auto &d : laser)
@@ -200,6 +192,28 @@ std::vector<SpecificWorker::LaserPoint> SpecificWorker::read_laser_from_robot()
     }catch (const Ice::Exception &e){ std::cout << e.what() << " No laser_pioneer_data" << std::endl; return {};}
 
     return laser_data;
+}
+void SpecificWorker::read_laser_from_coppelia_and_update()
+{
+    try
+    {
+        auto laser_data = laser_proxy->getLaserData();
+        // update laser in DSR
+        if( auto node = G->get_node(laser_name); node.has_value())
+        {
+            std::vector<float> dists;
+            std::transform(laser_data.begin(), laser_data.end(), std::back_inserter(dists), [](const auto &l) { return l.dist; });
+            std::vector<float> angles;
+            std::transform(laser_data.begin(), laser_data.end(), std::back_inserter(angles), [](const auto &l) { return l.angle; });
+            G->add_or_modify_attrib_local<laser_dists_att>(node.value(), dists);
+            G->add_or_modify_attrib_local<laser_angles_att>(node.value(), angles);
+            G->update_node(node.value());
+        }
+        else
+            qWarning() << __FUNCTION__ << "No laser node found";
+    }
+    catch (const Ice::Exception &e)
+    { std::cout << e.what() << " No connection to laser_pioneer_data" << std::endl;}
 }
 void SpecificWorker::update_laser(const std::vector<LaserPoint> &laser_data)
 {

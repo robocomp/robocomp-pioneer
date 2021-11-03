@@ -50,6 +50,12 @@
 //#include <QJsonArray>
 //#include <json/include/nlohmann/json.hpp>
 
+using namespace std::chrono_literals;
+using std::chrono::high_resolution_clock;
+using std::chrono::duration_cast;
+using std::chrono::duration;
+using std::chrono::milliseconds;
+
 class SpecificWorker : public GenericWorker
 {
 Q_OBJECT
@@ -78,6 +84,9 @@ private:
 
 	//DSR params
 	std::string agent_name;
+    std::string route1_filename;
+    std::string route2_filename;
+    std::string route3_filename;
 	int agent_id;
 
 	bool tree_view;
@@ -133,6 +142,7 @@ private:
     void draw_path(std::vector<Eigen::Vector2f> &path, QGraphicsScene* viewer_2d, bool remove = false);
     void follow_path_copy_path_to_graph(const std::vector<float> &x_values, const std::vector<float> &y_values);
     std::tuple<std::vector<float>, std::vector<float>>  load_path(string filename);
+    std::string selected_route = "";
 };
 
 #endif

@@ -6,7 +6,9 @@ tree_view = false
 graph_view = true
 2d_view = true
 3d_view = false
-
+route1_filename = etc/test.csv
+route2_filename = etc/test200.csv
+route3_filename = etc/test_complete.csv
 
 #Ice.MessageSizeMax=20004800
 InnerModelPath = innermodel.xml

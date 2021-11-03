@@ -51,6 +51,9 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 	graph_view = params["graph_view"].value == "true";
 	qscene_2d_view = params["2d_view"].value == "true";
 	osg_3d_view = params["3d_view"].value == "true";
+    route1_filename = params["route1_filename"].value;
+    route2_filename = params["route2_filename"].value;
+    route3_filename = params["route3_filename"].value;
 
 
 	return true;
@@ -275,6 +278,7 @@ void SpecificWorker::create_path_mission()
     auto draw_circle = [this]()
             {
                 // remove current drawing
+                pathfollow_dialog.list_routes->clear();
                 std::vector<Eigen::Vector2f> fake_path;
                 draw_path(fake_path, &pathfollow_draw_widget->scene, true);
                 draw_path(fake_path, &widget_2d->scene, true);
@@ -299,6 +303,7 @@ void SpecificWorker::create_path_mission()
     auto draw_oval = [this]()
     {
         // remove curent drawing
+        pathfollow_dialog.list_routes->clear();
         std::vector<Eigen::Vector2f> fake_path;
         draw_path(fake_path, &pathfollow_draw_widget->scene, true);
         draw_path(fake_path, &widget_2d->scene, true);
@@ -357,6 +362,7 @@ void SpecificWorker::create_path_mission()
     auto draw_waypoints = [this] ()
     {
         //List of routes
+        pathfollow_dialog.list_routes->clear();
         pathfollow_dialog.list_routes->addItem("Select a route");
         pathfollow_dialog.list_routes->addItem("Route 1");
         pathfollow_dialog.list_routes->addItem("Route 2");
@@ -368,20 +374,7 @@ void SpecificWorker::create_path_mission()
         draw_path(fake_path, &pathfollow_draw_widget->scene, true);
         draw_path(fake_path, &widget_2d->scene, true);
 
-        temporary_plan.x_path.clear();
-        temporary_plan.y_path.clear();
-        std::vector<Eigen::Vector2f> local_path;  // for drawing
-        auto [x, y] = load_path("etc/test.csv");
-        for(int i = 0; i <= x.size() ; i++)
-        {
-            cout << x[i] << endl;
-            float x_pos = x[i];
-            float y_pos = y[i];
-            temporary_plan.x_path.push_back(x_pos);
-            temporary_plan.y_path.push_back(y_pos);
-            local_path.emplace_back(Eigen::Vector2f(x_pos, y_pos));
-        }
-        draw_path(local_path, &pathfollow_draw_widget->scene);
+
 
 
     };
@@ -715,74 +708,53 @@ void SpecificWorker::slot_change_route_selector(int index)
     switch(index)
     {
         case 1: {
-            auto [x, y] = load_path("etc/test.csv");
-            //std::string name;
-            //std::vector<std::pair<std::string, std::vector<int>>> two_cols = read_csv("etc/test.csv");
-            //cout << "///////////// CSV" << two_cols.size() << endl;
-
-//            if (f_ent.is_open()) {
-//                std::cout << etc_path << " se ha abierto correctamente " << std::endl;
-//                //std::vector<unsigned char> cadena;
-//                QJsonArray aux = f_ent.;
-//                while (f_ent.get(aux)) {
-//                    cadena.push_back(aux);
-//                    std::cout<<aux;
-//                }
-//
-//            }
-//            else{
-//                cout << "NO FUNCIONA" <<endl;
-//            }
-//
-//            f_ent.close(); ///Cerramos el .json
-//            //Cargo el .csv con los waypoints de la ruta 1
+            selected_route = route1_filename;
             break;
         }
         case 2:{
-            std::string name;
-            ifstream f_ent;
-            name = "route1.geojson";
-            std::string etc_path = name;
-            cout << "Cargo primera ruta" << endl;
-            f_ent.open("etc/" + etc_path + ".json");
-
-            if (f_ent.is_open()) {
-                std::cout << etc_path << ".json" << " se ha abierto correctamente" << std::endl;
-                std::vector<unsigned char> cadena;
-                char aux = ' ';
-                while (f_ent.get(aux)) {
-                    cadena.push_back(aux);
-                    //std::cout<<aux;
-                }
-            }
-
-            f_ent.close(); ///Cerramos el .json
-            //Cargo el .csv con los waypoints de la ruta 1
+            selected_route = route2_filename;
             break;
         }
-        case 3:{
-            std::string name;
-            ifstream f_ent;
-            name = "route1.geojson";
-            std::string etc_path = name;
-            cout << "Cargo primera ruta" << endl;
-            f_ent.open("etc/" + etc_path + ".json");
-
-            if (f_ent.is_open()) {
-                std::cout << etc_path << ".json" << " se ha abierto correctamente" << std::endl;
-                std::vector<unsigned char> cadena;
-                char aux = ' ';
-                while (f_ent.get(aux)) {
-                    cadena.push_back(aux);
-                    //std::cout<<aux;
-                }
-            }
-
-            f_ent.close(); ///Cerramos el .json
-            //Cargo el .csv con los waypoints de la ruta 1
+        case 3: {
+            selected_route = route3_filename;
             break;
         }
     }
+    temporary_plan.x_path.clear();
+    temporary_plan.y_path.clear();
+    std::vector<Eigen::Vector2f> local_path;  // for drawing
+    auto[x, y] = load_path(selected_route);
+    std::cout << "----------------------" << std::endl;
+
+    for (int i = 0; i < x.size() - 1; i++)
+    {
+        //cout << x[i] << endl;
+        float x_pos = x[i];
+        float y_pos = y[i];
+//        std::vector<float> v_pruebaX;
+//        v_pruebaX.push_back(x_pos);
+        if( auto waypoint = G->get_node(waypoints_name); waypoint.has_value())
+        {
+            G->add_or_modify_attrib_local<wayp_x_att>(waypoint.value(), (int) x_pos);
+            G->add_or_modify_attrib_local<wayp_y_att>(waypoint.value(), (int) y_pos);
+            G->update_node(waypoint.value());
+        }
+        temporary_plan.x_path.push_back(x_pos);
+        temporary_plan.y_path.push_back(y_pos);
+        local_path.emplace_back(Eigen::Vector2f(x_pos, y_pos));
+    }
+    auto t3 = high_resolution_clock::now();
+    draw_path(local_path, &pathfollow_draw_widget->scene);
+    auto t4 = high_resolution_clock::now();
+    std::cout << duration_cast<milliseconds>(t4 - t3).count() << std::endl;
+
+//    if( auto node = G->get_node(current_path_name); node.has_value()) {
+//        auto xpos = G->get_attrib_by_name<path_x_values_att>(node.value());
+//        auto ypos = G->get_attrib_by_name<path_y_values_att>(node.value());
+//        std::vector<float> xpos_V = xpos.value();
+//        cout << "AAAAAAAAAAAAAAAAAAAAAAAA" << xpos_V[0] << endl;
+//    }
+
 }
 
 
@@ -792,7 +764,8 @@ std::tuple<std::vector<float>, std::vector<float>> SpecificWorker::load_path(str
     fin.open(filename);
     string x, y;
     vector<float> x_vec, y_vec;
-    while(!fin.eof()){
+    while(!fin.eof())
+    {
         getline(fin, x, ',');
         getline(fin, y);
         x_vec.push_back(atof(x.c_str()));

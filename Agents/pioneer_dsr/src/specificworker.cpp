@@ -427,12 +427,25 @@ std::optional<std::tuple<cv::Mat, std::vector<SpecificWorker::LaserPoint>>> Spec
 }
 cv::Mat SpecificWorker::compute_virtual_frame()
 {
-    RoboCompFullPoseEstimation::FullPoseEuler pose;
+    //RoboCompFullPoseEstimation::FullPoseEuler pose;
     RoboCompCameraRGBDSimple::TImage cdata_virtual;
     cv::Mat virtual_frame;
     try
     {
-        pose = fullposeestimation_proxy->getFullPoseEuler();
+
+        cdata_virtual = camerargbdsimple_proxy->getImage("pioneer_camera_virtual");
+        this->focalx = cdata_virtual.focalx;
+        this->focaly = cdata_virtual.focaly;
+        vector<int> compression_params;
+        compression_params.push_back(cv::IMWRITE_JPEG_QUALITY);
+        compression_params.push_back(50);
+        //qInfo() <<"1: "<< m.cols*m.rows*3;
+        if(!cdata_virtual.image.empty()) {
+            cv::imdecode(cdata_virtual.image, 1, &virtual_frame);
+            cv::cvtColor(virtual_frame, virtual_frame, cv::COLOR_BGR2RGB);
+        }
+
+       /* pose = fullposeestimation_proxy->getFullPoseEuler();
 
         int radiusCircle = 30;
         int thicknessCircle1 = 2;
@@ -441,7 +454,7 @@ cv::Mat SpecificWorker::compute_virtual_frame()
         if( auto node = G->get_node(waypoints_name); node.has_value()) {
           auto xpos = G->get_attrib_by_name<wayp_x_att>(node.value());
           auto ypos = G->get_attrib_by_name<wayp_y_att>(node.value());
-//
+
             if( auto parent = G->get_parent_node(node.value()); parent.has_value()) {
                 auto edge = rt->get_edge_RT(parent.value(), node.value().id()).value();
                 G->modify_attrib_local<rt_rotation_euler_xyz_att>(edge, std::vector<float>{0.0, 0.0, 0.0});
@@ -481,6 +494,7 @@ cv::Mat SpecificWorker::compute_virtual_frame()
             }
 
         }
+        */
         }
 
     catch (const Ice::Exception &e){ std::cout << e.what() << std::endl;}

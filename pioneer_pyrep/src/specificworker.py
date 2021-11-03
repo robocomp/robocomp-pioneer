@@ -99,18 +99,39 @@ class SpecificWorker(GenericWorker):
                                                      "rgb": np.array(0),
                                                      "depth": np.ndarray(0)}
 
+        self.front_center_camera_name = "pioneer_camera_center"
+        cam = VisionSensor(self.front_center_camera_name)
+        self.cameras_write[self.front_center_camera_name] = {"handle": cam,
+                                                            "id": 1,
+                                                            "angle": np.radians(cam.get_perspective_angle()),
+                                                            "width": cam.get_resolution()[0],
+                                                            "height": cam.get_resolution()[1],
+                                                            "focal": (cam.get_resolution()[0] / 2) / np.tan(
+                                                                np.radians(cam.get_perspective_angle() / 2)),
+                                                            "rgb": np.array(0),
+                                                            "depth": np.ndarray(0)}
+
         self.front_right_camera_name = "pioneer_camera_right"
         cam = VisionSensor(self.front_right_camera_name)
         self.cameras_write[self.front_right_camera_name] = {"handle": cam,
-                                                     "id": 1,
-                                                     "angle": np.radians(cam.get_perspective_angle()),
-                                                     "width": cam.get_resolution()[0],
-                                                     "height": cam.get_resolution()[1],
-                                                     "focal": (cam.get_resolution()[0] / 2) / np.tan(
-                                                         np.radians(cam.get_perspective_angle() / 2)),
-                                                     "rgb": np.array(0),
-                                                     "depth": np.ndarray(0)}
+                                                            "id": 2,
+                                                            "angle": np.radians(cam.get_perspective_angle()),
+                                                            "width": cam.get_resolution()[0],
+                                                            "height": cam.get_resolution()[1],
+                                                            "focal": (cam.get_resolution()[0] / 2) / np.tan(
+                                                                np.radians(cam.get_perspective_angle() / 2)),
+                                                            "rgb": np.array(0),
+                                                            "depth": np.ndarray(0)}
 
+        self.virtual_camera_name = "pioneer_virtual_camera"
+        self.cameras_write[self.virtual_camera_name] = {"handle": None,
+                                                        "id": 3,
+                                                        "angle": np.pi,
+                                                        "width": self.cameras_write[self.front_center_camera_name]["height"]*3,
+                                                        "height": self.cameras_write[self.front_center_camera_name]["width"],
+                                                        "focal": self.cameras_write[self.front_center_camera_name]["focal"],
+                                                        "rgb": np.array(0),
+                                                        "depth": np.ndarray(0)}
 
         self.cameras_read = self.cameras_write.copy()
         self.mutex_c = Lock()
@@ -136,7 +157,7 @@ class SpecificWorker(GenericWorker):
         while True:
             self.pr.step()
             self.read_laser()
-            self.read_cameras([self.front_left_camera_name, self.front_right_camera_name])
+            self.read_cameras([self.front_left_camera_name, self.front_right_camera_name, self.front_center_camera_name])
             self.read_joystick()
             self.read_robot_pose()
             self.move_robot()
@@ -185,30 +206,46 @@ class SpecificWorker(GenericWorker):
     ### CAMERAS get and publish cameras data
     ###########################################
     def read_cameras(self, camera_names):
-        for camera_name in camera_names:
-            cam = self.cameras_write[camera_name]
+        # virtual frame
+        virtual_width = self.cameras_write[self.virtual_camera_name]["width"]
+        virtual_height = self.cameras_write[self.virtual_camera_name]["height"]
+        height = self.cameras_write[self.front_left_camera_name]['width']
+        width = self.cameras_write[self.front_left_camera_name]['height']
+
+        frame_virtual = np.zeros((width, height * 3, 3), dtype=np.uint8)
+        winLeft = frame_virtual[0:width, 0:height]
+        winCenter = frame_virtual[0:width, height:height * 2]
+        winRight = frame_virtual[0:width, height * 2:height * 3]
+
+        wins = [winLeft, winCenter, winRight]
+        for w, cam_name in zip(wins,  self.cameras_read.keys()):
+            cam = self.cameras_write[cam_name]
             image_float = cam["handle"].capture_rgb()
             depth = cam["handle"].capture_depth(True)
             image = cv2.normalize(src=image_float, dst=None, alpha=0, beta=255, norm_type=cv2.NORM_MINMAX,
                                   dtype=cv2.CV_8U)
-            #image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            cam["rgb"] = RoboCompCameraRGBDSimple.TImage(cameraID=cam["id"], width=cam["width"], height=cam["height"],
-                                                         depth=3, focalx=cam["focal"], focaly=cam["focal"],
-                                                         alivetime=time.time(), image=image.tobytes())
-            cam["depth"] = RoboCompCameraRGBDSimple.TDepth(cameraID=cam["id"], width=cam["handle"].get_resolution()[0],
-                                                           height=cam["handle"].get_resolution()[1],
-                                                           focalx=cam["focal"], focaly=cam["focal"],
-                                                           alivetime=time.time(), depthFactor=1.0,
-                                                           depth=depth.tobytes())
+            buffer = cv2.rotate(image, cv2.ROTATE_90_CLOCKWISE)
+            w[:, :, :] = buffer[:, :, :]
+
+        # cv2.imshow("virtual", frame_virtual)
+        # print(frame_virtual.shape)
+
+        #image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        cam = self.cameras_write[self.virtual_camera_name]
+        buffer = cv2.imencode(".jpg", frame_virtual)[1]
+        cam["rgb"] = RoboCompCameraRGBDSimple.TImage(cameraID=cam["id"], width=cam["width"], height=cam["height"],
+                                                     depth=3, focalx=cam["focal"], focaly=cam["focal"],
+                                                     alivetime=time.time(), image=buffer)
+
+        # cam["depth"] = RoboCompCameraRGBDSimple.TDepth(cameraID=cam["id"], width=cam["handle"].get_resolution()[0],
+        #                                                height=cam["handle"].get_resolution()[1],
+        #                                                focalx=cam["focal"], focaly=cam["focal"],
+        #                                                alivetime=time.time(), depthFactor=1.0,
+        #                                                depth=depth.tobytes())
 
         self.mutex_c.acquire()
         self.cameras_write, self.cameras_read = self.cameras_read, self.cameras_write
         self.mutex_c.release()
-
-            # try:
-            #    self.camerargbdsimplepub_proxy.pushRGBD(cam["rgb"], cam["depth"])
-            # except Ice.Exception as e:
-            #    print(e)
 
     ###########################################
     ### JOYSITCK read and move the robot
@@ -313,7 +350,7 @@ class SpecificWorker(GenericWorker):
     #                       Methods for CameraRGBDSimple
     # ===============================================================================
     #
-    # getAll
+    # getAll  ID 3 for VIRTUAL CAMERA
     #
     def CameraRGBDSimple_getAll(self, camera):
         if camera in self.cameras_read.keys():
@@ -335,7 +372,7 @@ class SpecificWorker(GenericWorker):
             raise e
 
     #
-    # getImage
+    # getImage  ID 3 for VIRTUAL CAMERA
     #
     def CameraRGBDSimple_getImage(self, camera):
         if camera in self.cameras_read.keys():

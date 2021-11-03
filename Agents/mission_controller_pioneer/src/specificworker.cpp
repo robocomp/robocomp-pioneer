@@ -143,7 +143,6 @@ void SpecificWorker::initialize(int period)
         else
         {
             std::cout << "Controller-DSR terminate: could not find a camera node named " << pioneer_head_camera_right_name << std::endl;
-
             std::terminate();
         }
 
@@ -193,16 +192,19 @@ void SpecificWorker::compute()
     static std::chrono::steady_clock::time_point begin, lastPathStep;
 
     // check for existing missions
-    if (auto plan_o = plan_buffer.try_get(); plan_o.has_value())
-    {
+    if (auto plan_o = plan_buffer.try_get(); plan_o.has_value()) {
         current_plan = plan_o.value();
-        std::cout << __FUNCTION__  << " New plan arrived: " << std::endl;
+        std::cout << __FUNCTION__ << " New plan arrived: " << std::endl;
         std::cout << current_plan.pprint() << std::endl;
-        custom_widget.textedit_current_plan->appendPlainText("-> compute: initiating plan " + current_plan.get_action());
+        custom_widget.textedit_current_plan->appendPlainText(
+                "-> compute: initiating plan " + current_plan.get_action());
         current_plan.set_running();
     }
 
-    auto robot_pos = inner_eigen->transform(world_name, robot_name).value();
+
+    if (auto robot_pos_o = inner_eigen->transform(world_name, robot_name); robot_pos_o.has_value())
+        robot_pos = robot_pos_o.value();
+
     float coordX = point_dialog.goto_spinbox_coordX->value();
     float coordY = point_dialog.goto_spinbox_coordY->value();
     float umbral = 200.0;
@@ -210,38 +212,34 @@ void SpecificWorker::compute()
     float adv = G->get_attrib_by_name<robot_ref_adv_speed_att>(robot_node.value()).value_or(0);
     float rot = G->get_attrib_by_name<robot_ref_rot_speed_att>(robot_node.value()).value_or(0);
 
-    if (current_plan.is_running())
-    {
+    if (current_plan.is_running()) {
         qInfo() << __FUNCTION__ << " Plan is running...";
 
-        if (current_plan.get_action() == "GOTO")
-        {
+        if (current_plan.get_action() == "GOTO") {
             float mod = sqrt(pow((coordX - robot_pos.x()), 2) + pow((coordY - robot_pos.y()), 2));
-            if (mod < umbral && (adv == 0.0 && rot == 0.0))
-            {
+            if (mod < umbral && (adv == 0.0 && rot == 0.0)) {
                 current_plan.is_finished();
                 slot_stop_mission();
                 qInfo() << __FUNCTION__ << " Plan finished!";
             }
         }
+    } else { // there should be a plan after a few seconds
     }
-
-    else
-    { // there should be a plan after a few seconds
-    }
-
 
     //read_camera();
     // path trail
-    if(custom_widget.path_trail_button->isChecked())
-    {
+    if (custom_widget.path_trail_button->isChecked()) {
         auto robot_pos = inner_eigen->transform(world_name, robot_name).value();
         QLineF line(last_point.x(), last_point.y(), robot_pos.x(), robot_pos.y());
-        lines.push_back(widget_2d->scene.addLine(line, QPen(QColor("Blue"),40)));
+        lines.push_back(widget_2d->scene.addLine(line, QPen(QColor("Blue"), 40)));
         last_point = QPointF(robot_pos.x(), robot_pos.y());
     }
-}
 
+    if (custom_widget.image_push_button->isChecked())
+        read_camera();
+//    else
+//        cv::destroyWindow("Path");
+}
 ////////////////////////////////////////////////////////////////////////////////////////////
 void SpecificWorker::read_camera()
 {
@@ -249,13 +247,40 @@ void SpecificWorker::read_camera()
     if (auto vframe_t = virtual_camera_buffer.try_get(); vframe_t.has_value())
     {
         auto vframe = cv::Mat(cam_api->get_height(), cam_api->get_width(), CV_8UC3, vframe_t.value().data());
-        pix = QPixmap::fromImage(QImage(vframe.data, vframe.cols, vframe.rows, QImage::Format_RGB888));
-        // custom_widget.label_rgb->setPixmap(pix);
+        cv::cvtColor(vframe, vframe, cv::COLOR_BGR2RGB);
+        if(vframe.cols>0 and vframe.rows>0 )
+        {
+            for (auto &&[x, y]: iter::zip(temporary_plan.x_path, temporary_plan.y_path))
+            {
+                Eigen::Vector3d p(x, y, 0);
+                if (auto pc = inner_eigen->transform(pioneer_camera_virtual_name, p, world_name); pc.has_value())
+                {
+                    auto coor = cam_api->project(pc.value());
+                    cv::circle(vframe, cv::Point(coor.x(), coor.y()), 30, cv::Scalar(0, 233, 255), cv::FILLED);
+
+                ///ETIQUETA
+
+                float distancia = sqrt(pow((robot_pos.x() - coor.x()*1.0), 2) + pow((robot_pos.y() - coor.y()*1.0), 2))/1000; //en metros
+                std::stringstream d;
+                d << std::fixed << std::setprecision(2) << distancia;
+                std::string dist = d.str();
+                cv::Scalar colorText(0, 0, 0);
+                cv::Point centerText((int) coor.x()-23, (int) coor.y()+5);
+                cv::putText(vframe,dist,centerText,cv::FONT_ITALIC,0.6,colorText,2,false);
+
+                } else qWarning() << __FUNCTION__ << "Cannot transform between world and camera";
+            }
+            cv::imshow("Path", vframe);
+        }
     }
+
+    if (custom_widget.image_push_button->isDown())
+        cv::destroyWindow("Path");
+        //pix = QPixmap::fromImage(QImage(vframe.data, vframe.cols, vframe.rows, QImage::Format_RGB888));
+        // custom_widget.label_rgb->setPixmap(pix);
+}
 //    else if (!custom_widget.image_onoff_button->isChecked())
 //        custom_widget.label_rgb->clear();
-
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 /// Mission creation methods
@@ -373,13 +398,7 @@ void SpecificWorker::create_path_mission()
         std::vector<Eigen::Vector2f> fake_path;
         draw_path(fake_path, &pathfollow_draw_widget->scene, true);
         draw_path(fake_path, &widget_2d->scene, true);
-
-
-
-
     };
-
-
     connect(pathfollow_dialog.button_group, QOverload<QAbstractButton *>::of(&QButtonGroup::buttonClicked),
             [this, draw_circle, draw_oval, draw_waypoints](QAbstractButton *button)
             {
@@ -471,12 +490,12 @@ void SpecificWorker::create_goto_mission()
         point_dialog.goto_spinbox_coordX->setValue(x);
         point_dialog.goto_spinbox_coordY->setValue(y);
 
-        if( auto waypoint = G->get_node(waypoints_name); waypoint.has_value())
+        /*if( auto waypoint = G->get_node(waypoints_name); waypoint.has_value())
         {
             G->add_or_modify_attrib_local<wayp_x_att>(waypoint.value(), (int) x);
             G->add_or_modify_attrib_local<wayp_y_att>(waypoint.value(), (int) y);
             G->update_node(waypoint.value());
-        }
+        }*/
 
 
 
@@ -501,7 +520,11 @@ void SpecificWorker::add_or_assign_node_slot(const std::uint64_t id, const std::
     {
         if (auto cam_node = G->get_node(id); cam_node.has_value())
             if (const auto g_image = G->get_attrib_by_name<cam_rgb_att>(cam_node.value()); g_image.has_value())
-                virtual_camera_buffer.put(std::vector<uint8_t>(g_image.value().get().begin(), g_image.value().get().end()));
+            {
+                //qInfo() << __FUNCTION__ << "GOLASLD";
+                virtual_camera_buffer.put(
+                        std::vector<uint8_t>(g_image.value().get().begin(), g_image.value().get().end()));
+            }
     }
     else if (type == laser_type_name)    // Laser node updated
     {
@@ -722,11 +745,21 @@ void SpecificWorker::slot_change_route_selector(int index)
     }
     temporary_plan.x_path.clear();
     temporary_plan.y_path.clear();
-    std::vector<Eigen::Vector2f> local_path;  // for drawing
-    auto[x, y] = load_path(selected_route);
-    std::cout << "----------------------" << std::endl;
+    auto[xpts, ypts] = load_path(selected_route);
+    xpts.erase(xpts.end()-1); ypts.erase(ypts.end()-1);
+    temporary_plan.x_path.resize(xpts.size());
+    temporary_plan.y_path.resize(ypts.size());
+    std::copy( xpts.begin(), xpts.end(),temporary_plan.x_path.begin());
+    std::copy( ypts.begin(), ypts.end(), temporary_plan.y_path.begin());
+    follow_path_copy_path_to_graph(temporary_plan.x_path, temporary_plan.y_path);
 
-    for (int i = 0; i < x.size() - 1; i++)
+    std::vector<Eigen::Vector2f> local_path;  // for drawing
+    for(auto &&[x,y] : iter::zip(xpts, ypts))
+        local_path.emplace_back(Eigen::Vector2f(x,y));
+
+    draw_path(local_path, &pathfollow_draw_widget->scene);
+
+    /*for (int i = 0; i < x.size() - 1; i++)
     {
         //cout << x[i] << endl;
         float x_pos = x[i];
@@ -754,9 +787,8 @@ void SpecificWorker::slot_change_route_selector(int index)
 //        std::vector<float> xpos_V = xpos.value();
 //        cout << "AAAAAAAAAAAAAAAAAAAAAAAA" << xpos_V[0] << endl;
 //    }
-
+*/
 }
-
 
 std::tuple<std::vector<float>, std::vector<float>> SpecificWorker::load_path(string filename)
 {

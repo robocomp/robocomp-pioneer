@@ -328,7 +328,6 @@ class SpecificWorker(GenericWorker):
         self.robot_full_pose_write, self.robot_full_pose_read = self.robot_full_pose_read, self.robot_full_pose_write
         self.mutex.release()
 
-
     ###########################################
     ### MOVE ROBOT from Omnirobot interface
     ###########################################
@@ -385,7 +384,6 @@ class SpecificWorker(GenericWorker):
     ##############################################
     ## Omnibase
     #############################################
-
     #
     # correctOdometer
     #

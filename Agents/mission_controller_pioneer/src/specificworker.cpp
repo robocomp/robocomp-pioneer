@@ -134,7 +134,6 @@ void SpecificWorker::initialize(int period)
         dimensions.setBottom(G->get_attrib_by_name<OuterRegionBottom_att>(world_node).value());
         pathfollow_draw_widget = new AbstractGraphicViewer(pathfollow_dialog.test_widget, dimensions);
 
-
         // get camera_api
         if(auto cam_node = G->get_node(pioneer_camera_virtual_name); cam_node.has_value())
             cam_api = G->get_camera_api(cam_node.value());
@@ -229,7 +228,7 @@ void SpecificWorker::compute()
     }
 
 
-    read_camera();
+    //read_camera();
     // path trail
     if(custom_widget.path_trail_button->isChecked())
     {
@@ -423,7 +422,8 @@ void SpecificWorker::create_path_mission()
 
 }
 
-void SpecificWorker::create_goto_mission() {
+void SpecificWorker::create_goto_mission()
+{
     static QGraphicsEllipseItem *target_scene;
     custom_widget.stacked_widget->setCurrentIndex(0);
     temporary_plan.new_plan(Plan::Actions::GOTO);
@@ -711,7 +711,6 @@ void SpecificWorker::slot_change_route_selector(int index)
     // remove current filling_plan and create a new one
     //slot_stop_mission();
     // createa new current filling_plan of the index typw
-
 
     switch(index)
     {

@@ -65,81 +65,78 @@ bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 void SpecificWorker::initialize(int period)
 {
 	std::cout << "Initialize worker" << std::endl;
-
-    // create graph
-    G = std::make_shared<DSR::DSRGraph>(0, agent_name, agent_id, ""); // Init nodes
-    std::cout<< __FUNCTION__ << "Graph loaded" << std::endl;
-
-    // connected to APIS
-    rt = G->get_rt_api();
-    inner_eigen = G->get_inner_eigen_api();
-
-    //dsr update signals
-    //connect(G.get(), &DSR::DSRGraph::update_node_signal, this, &SpecificWorker::add_or_assign_node_slot);
-    //connect(G.get(), &DSR::DSRGraph::update_edge_signal, this, &SpecificWorker::add_or_assign_edge_slot);
-    connect(G.get(), &DSR::DSRGraph::update_node_attr_signal, this, &SpecificWorker::modify_attrs_slot, Qt::QueuedConnection);
-    //connect(G.get(), &DSR::DSRGraph::del_edge_signal, this, &SpecificWorker::del_edge_slot);
-    //connect(G.get(), &DSR::DSRGraph::del_node_signal, this, &SpecificWorker::del_node_slot);
-
-    // Graph viewer
-    using opts = DSR::DSRViewer::view;
-    int current_opts = 0;
-    opts main = opts::none;
-    if(tree_view)
-        current_opts = current_opts | opts::tree;
-    if(graph_view)
-        current_opts = current_opts | opts::graph;
-    if(qscene_2d_view)
-        current_opts = current_opts | opts::scene;
-    if(osg_3d_view)
-        current_opts = current_opts | opts::osg;
-    graph_viewer = std::make_unique<DSR::DSRViewer>(this, G, current_opts, main);
-    setWindowTitle(QString::fromStdString(agent_name + "-") + QString::number(agent_id));
-
-    if(robot_real)
-    {
-        qInfo() << "Robot real";
-        try {
-            //float x = 9835+11*340;
-            // float x = -3085;
-            //float y = -14043;
-            float x = 9300; //10143;//14963-13*340-400;//-3171;
-            float y = 5525; //18225-13600+900;//-6680;
-            float z = 0;
-            float rx = 0;
-            float ry = 0;
-            float rz = 180;
-            fullposeestimation_proxy->setInitialPose(x, y, z, rx, ry, rz);
-            gpsublox_proxy->setInitialPose(x, y);
-        }
-        catch (const Ice::Exception &e) { std::cout << e.what() << std::endl; };
-    }
-
-    // get camera_api
-    if(auto cam_node = G->get_node(pioneer_camera_virtual_name); cam_node.has_value())
-        cam_api = G->get_camera_api(cam_node.value());
-    else
-    {
-        std::cout << "Controller-DSR terminate: could not find a camera node named " << pioneer_head_camera_right_name << std::endl;
-        std::terminate();
-    }
-
-    // rt_api
-    auto rt = G->get_rt_api();
-    if(auto robot_id = G->get_id_from_name(robot_name); robot_id.has_value())
-        robot_id = robot_id.value();
-    else
-    {
-        qWarning() << "No robot node found. Terminate";
-        std::terminate();
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////
 	this->Period = period;
 	if(this->startup_check_flag)
 		this->startup_check();
 	else
 	{
+		timer.start(Period);
+		// create graph
+		G = std::make_shared<DSR::DSRGraph>(0, agent_name, agent_id, ""); // Init nodes
+		std::cout<< __FUNCTION__ << "Graph loaded" << std::endl;
+
+		//APIS
+        rt = G->get_rt_api();
+        inner_eigen = G->get_inner_eigen_api();
+
+		//dsr update signals
+		//connect(G.get(), &DSR::DSRGraph::update_node_signal, this, &SpecificWorker::add_or_assign_node_slot);
+		//connect(G.get(), &DSR::DSRGraph::update_edge_signal, this, &SpecificWorker::add_or_assign_edge_slot);
+		connect(G.get(), &DSR::DSRGraph::update_node_attr_signal, this, &SpecificWorker::modify_attrs_slot, Qt::QueuedConnection);
+        //connect(G.get(), &DSR::DSRGraph::del_edge_signal, this, &SpecificWorker::del_edge_slot);
+		//connect(G.get(), &DSR::DSRGraph::del_node_signal, this, &SpecificWorker::del_node_slot);
+
+		// Graph viewer
+		using opts = DSR::DSRViewer::view;
+		int current_opts = 0;
+		opts main = opts::none;
+		if(tree_view)
+		    current_opts = current_opts | opts::tree;
+		if(graph_view)
+		    current_opts = current_opts | opts::graph;
+		if(qscene_2d_view)
+		    current_opts = current_opts | opts::scene;
+		if(osg_3d_view)
+		    current_opts = current_opts | opts::osg;
+		graph_viewer = std::make_unique<DSR::DSRViewer>(this, G, current_opts, main);
+		setWindowTitle(QString::fromStdString(agent_name + "-") + QString::number(agent_id));
+
+		if(robot_real)
+		{
+		    qInfo() << "Robot real";
+            try {
+                //float x = 9835+11*340;
+                // float x = -3085;
+                //float y = -14043;
+                float x = 9300; //10143;//14963-13*340-400;//-3171;
+                float y = 5525; //18225-13600+900;//-6680;
+                float z = 0;
+                float rx = 0;
+                float ry = 0;
+                float rz = 180;
+                fullposeestimation_proxy->setInitialPose(x, y, z, rx, ry, rz);
+                gpsublox_proxy->setInitialPose(x, y);
+            }
+            catch (const Ice::Exception &e) { std::cout << e.what() << std::endl; };
+        }
+        // get camera_api
+        if(auto cam_node = G->get_node(pioneer_camera_virtual_name); cam_node.has_value())
+            cam_api = G->get_camera_api(cam_node.value());
+        else
+        {
+            std::cout << "Controller-DSR terminate: could not find a camera node named " << pioneer_head_camera_right_name << std::endl;
+            std::terminate();
+        }
+        auto rt = G->get_rt_api();
+		if(auto robot_id = G->get_id_from_name(robot_name); robot_id.has_value())
+		    robot_id = robot_id.value();
+		else
+        {
+		    qWarning() << "No robot node found. Terminate";
+            std::terminate();
+        }
+
+
         this->Period = period;
         timer.start(Period);
 	}
@@ -655,7 +652,6 @@ void SpecificWorker::update_gps()
     try
     {
         auto gps_state = gpsublox_proxy->getData();
-        //qInfo() << __FUNCTION__ << "ENTROOOOOO" ;
         if( auto gps = G->get_node(gps_name); gps.has_value())
         {
             G->add_or_modify_attrib_local<gps_latitude_att>(gps.value(), (float)gps_state.latitude);

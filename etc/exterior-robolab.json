@@ -1132,30 +1132,7 @@
                                 "value": [
                                     0,
                                     0,
-                                    0
-                                ]
-                            },
-                            "rt_translation": {
-                                "type": 3,
-                                "value": [
-                                    0,
-                                    0,
-                                    0
-                                ]
-                            }
-                        },
-                        "src": "1"
-                    },
-                    {
-                        "dst": "43119223555227668",
-                        "label": "RT",
-                        "linkAttribute": {
-                            "rt_rotation_euler_xyz": {
-                                "type": 3,
-                                "value": [
-                                    0,
-                                    0,
-                                    0
+                                    -3.1387834548950195
                                 ]
                             },
                             "rt_translation": {
@@ -1247,6 +1224,13 @@
                 },
                 "id": "1000",
                 "links": [
+                    {
+                        "dst": "43280884983398401",
+                        "label": "has",
+                        "linkAttribute": {
+                        },
+                        "src": "1000"
+                    }
                 ],
                 "name": "mind",
                 "type": "transform"
@@ -1791,6 +1775,14 @@
                     "ref_side_speed": {
                         "type": 2,
                         "value": 0
+                    },
+                    "robot_local_linear_velocity": {
+                        "type": 3,
+                        "value": [
+                            -890180022042624,
+                            -2500699095040,
+                            -3.1387834548950195
+                        ]
                     }
                 },
                 "id": "200",
@@ -2249,6 +2241,15 @@
             },
             "212": {
                 "attribute": {
+                    "cam_rgb": {
+                        "type": 5,
+                        "value": [
+                        ]
+                    },
+                    "cam_rgb_alivetime": {
+                        "type": 1,
+                        "value": -442356370
+                    },
                     "cam_rgb_depth": {
                         "type": 1,
                         "value": 0
@@ -2632,6 +2633,11 @@
                     "height": {
                         "type": 1,
                         "value": 20
+                    },
+                    "laser_dists": {
+                        "type": 3,
+                        "value": [
+                        ]
                     },
                     "level": {
                         "type": 1,
@@ -3560,43 +3566,6 @@
                 "name": "wall_43",
                 "type": "plane"
             },
-            "43119223555227668": {
-                "attribute": {
-                    "color": {
-                        "type": 0,
-                        "value": "GoldenRod"
-                    },
-                    "level": {
-                        "type": 1,
-                        "value": 1
-                    },
-                    "parent": {
-                        "type": 7,
-                        "value": "1"
-                    },
-                    "pos_x": {
-                        "type": 2,
-                        "value": 277.299988
-                    },
-                    "pos_y": {
-                        "type": 2,
-                        "value": -128.220001
-                    },
-                    "wayp_x": {
-                        "type": 1,
-                        "value": 0
-                    },
-                    "wayp_y": {
-                        "type": 1,
-                        "value": 0
-                    }
-                },
-                "id": "43119223555227668",
-                "links": [
-                ],
-                "name": "waypoints",
-                "type": "wayp"
-            },
             "43280884983398401": {
                 "attribute": {
                     "agent_description": {
@@ -3642,13 +3611,6 @@
                 },
                 "id": "43280884983398401",
                 "links": [
-                    {
-                        "dst": "43280884983398401",
-                        "label": "has",
-                        "linkAttribute": {
-                        },
-                        "src": "1000"
-                    }
                 ],
                 "name": "Participant_1 ( idserver )",
                 "type": "agent"

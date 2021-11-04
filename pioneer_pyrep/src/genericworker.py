@@ -29,7 +29,6 @@ except KeyError:
 
 Ice.loadSlice("-I ./src/ --all ./src/CommonBehavior.ice")
 import RoboCompCommonBehavior
-
 Ice.loadSlice("-I ./src/ --all ./src/CameraRGBDSimple.ice")
 import RoboCompCameraRGBDSimple 
 Ice.loadSlice("-I ./src/ --all ./src/CameraRGBDSimplePub.ice")

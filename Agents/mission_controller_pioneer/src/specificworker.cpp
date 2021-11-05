@@ -103,9 +103,7 @@ void SpecificWorker::initialize(int period)
         setWindowTitle(QString::fromStdString(agent_name + "-") + QString::number(agent_id));
 
         // 2D widget
-
         widget_2d = qobject_cast<DSR::QScene2dViewer *>(graph_viewer->get_widget(opts::scene));
-        cout << "widget2D CARGA";
         widget_2d->set_draw_laser(true);
 
         // custom widget
@@ -833,36 +831,20 @@ void SpecificWorker::draw_path(std::vector<Eigen::Vector2f> &path, QGraphicsScen
     if(remove) return;      // Just clear the path
 
     /// Draw all points
-    QGraphicsLineItem *line1, *line2;
-    std::string color;
-    for (unsigned int i = 1; i < path.size(); i++)
-        for(auto &&p_pair : iter::sliding_window(path, 2))
-        {
-            if(p_pair.size() < 2)
-                continue;
-            Mat::Vector2d a_point(p_pair[0].x(), p_pair[0].y());
-            Mat::Vector2d b_point(p_pair[1].x(), p_pair[1].y());
-            Mat::Vector2d dir = a_point - b_point;
-            Mat::Vector2d dir_perp = dir.unitOrthogonal();
-            Eigen::ParametrizedLine segment = Eigen::ParametrizedLine<double, 2>::Through(a_point, b_point);
-            Eigen::ParametrizedLine<double, 2> segment_perp((a_point+b_point)/2, dir_perp);
-            auto left = segment_perp.pointAt(50);
-            auto right = segment_perp.pointAt(-50);
-            QLineF qsegment(QPointF(a_point.x(), a_point.y()), QPointF(b_point.x(), b_point.y()));
-            QLineF qsegment_perp(QPointF(left.x(), left.y()), QPointF(right.x(), right.y()));
-
-            if(i == 1 or i == path.size()-1)
-                color = "#00FF00"; //Green
-
-            line1 = viewer_2d->addLine(qsegment, QPen(QBrush(QColor(QString::fromStdString(color))), 500));
-            line2 = viewer_2d->addLine(qsegment_perp, QPen(QBrush(QColor(QString::fromStdString("#F0FF00"))), 20));
-            line1->setZValue(2000);
-            line2->setZValue(2000);
+    QGraphicsLineItem *line1;
+    QPen pen(QColor("Green"), 50);
+    for(auto &&p_pair : iter::sliding_window(path, 2))
+    {
+        if(p_pair.size() < 2)
+            continue;
+        Mat::Vector2d a_point(p_pair[0].x(), p_pair[0].y());
+        Mat::Vector2d b_point(p_pair[1].x(), p_pair[1].y());
+        QLineF qsegment(QPointF(a_point.x(), a_point.y()), QPointF(b_point.x(), b_point.y()));
+        line1 = viewer_2d->addLine(qsegment, pen);
+        line1->setZValue(2000);
 //            scene_road_points.push_back(line1);
-//            scene_road_points.push_back(line2);
-            scene_road_points->push_back(line1);
-            scene_road_points->push_back(line2);
-        }
+        scene_road_points->push_back(line1);
+    }
 }
 void SpecificWorker::send_command_to_robot(const std::tuple<float, float, float> &speeds)   //adv, rot, side
 {

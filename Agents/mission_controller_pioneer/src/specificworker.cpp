@@ -251,23 +251,34 @@ void SpecificWorker::read_camera()
             for (auto &&[x, y]: iter::zip(temporary_plan.x_path, temporary_plan.y_path))
             {
                 Eigen::Vector3d p(x, y, 0);
-                if (auto pc = inner_eigen->transform(pioneer_camera_virtual_name, p, world_name); pc.has_value())
-                {
-                    auto coor = cam_api->project(pc.value());
-                    cv::circle(vframe, cv::Point(coor.x(), coor.y()), 30, cv::Scalar(0, 233, 255), cv::FILLED);
 
-                ///ETIQUETA
+//                float angle = atan2((p.y() - robot_pos.y()), (p.x() - robot_pos.x())); //is in the correct angle
+//                if ( angle > 0.0 and angle < M_PI) //30º
+//                {
+//                    cout << "///////// angle " << angle << endl;
+                    if (auto pc = inner_eigen->transform(pioneer_camera_virtual_name, p, world_name); pc.has_value())
+                    {
+                        auto coor = cam_api->project(pc.value());
+                        cv::circle(vframe, cv::Point(coor.x(), coor.y()), 10, cv::Scalar(0, 233, 255), cv::FILLED);
 
-                float distancia = sqrt(pow((robot_pos.x() - coor.x()*1.0), 2) + pow((robot_pos.y() - coor.y()*1.0), 2))/1000; //en metros
-                std::stringstream d;
-                d << std::fixed << std::setprecision(2) << distancia;
-                std::string dist = d.str();
-                cv::Scalar colorText(0, 0, 0);
-                cv::Point centerText((int) coor.x()-23, (int) coor.y()+5);
-                cv::putText(vframe,dist,centerText,cv::FONT_ITALIC,0.6,colorText,2,false);
+                        ///ETIQUETA
 
-                } else qWarning() << __FUNCTION__ << "Cannot transform between world and camera";
+                        float distance = sqrt(pow((robot_pos.x() - p.x()*1.0), 2) + pow((robot_pos.y() - p.y()*1.0), 2))/1000; //en metros
+//                cout << "+++++++++++++++ robot_pos.x " << robot_pos.x() << "p.x " << p.x() << endl;
+//                cout << "--------------- robot_pos.y " << robot_pos.y() << "p.y " << p.y() << endl;
+                        if (distance < 3.0) //is near
+                        {
+                            std::stringstream d;
+                            d << std::fixed << std::setprecision(2) << distance;
+                            std::string dist = d.str();
+                            cv::Scalar colorText(0, 0, 0);
+                            cv::Point centerText((int) coor.x() - 23, (int) coor.y() + 5);
+                            cv::putText(vframe,dist,centerText,cv::FONT_ITALIC,0.6,colorText,2,false);
+                        }
+                    } else qWarning() << __FUNCTION__ << "Cannot transform between world and camera";
+              //  }
             }
+
             cv::imshow("Path", vframe);
         }
     }

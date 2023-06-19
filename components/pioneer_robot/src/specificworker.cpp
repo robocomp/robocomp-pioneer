@@ -48,7 +48,15 @@ SpecificWorker::~SpecificWorker()
 
 bool SpecificWorker::setParams(RoboCompCommonBehavior::ParameterList params)
 {
-	return true;
+	    try
+    {
+        //Parametros por el config
+        this->portRobot  = params.at("port").value;
+        std::cout << "Params: Port" << this->portRobot<< std::endl<<std::flush;
+    }
+    catch(const std::exception &e)
+    { std::cout << e.what() << " Error reading config params" << std::endl;};
+    return true;
 }
 
 // int SpecificWorker::rate(){
@@ -77,10 +85,12 @@ void SpecificWorker::initialize(int period)
 
 	std::cout << "Initialize worker" << std::endl;
 	Aria::init();
-
     robot = new ArRobot();
-    ArArgumentBuilder *args = new ArArgumentBuilder(); //  never freed
-    ArArgumentParser *argparser = new ArArgumentParser(args); // Warning never freed
+
+    int argcParser = 2;
+    const char* argvParser[] = {"-rp", this->portRobot.c_str()};
+   // ArArgumentBuilder *args = new ArArgumentBuilder(2, "-rp /dev/USV", false, false); //  never freed
+    ArArgumentParser *argparser = new ArArgumentParser(&argcParser, const_cast<char**>(argvParser)); // Warning never freed
     argparser->loadDefaultArguments(); // adds any arguments given in /etc/Aria.args.  Useful on robots with unusual serial port or baud rate (e.g. pioneer lx)
     conn = new ArRobotConnector(argparser, robot); // warning never freed
     //ArRobotConnector robotConnector(argparser, robot);
@@ -104,7 +114,7 @@ void SpecificWorker::initialize(int period)
     connect(&timerRSSI, &QTimer::timeout, this, &SpecificWorker::rate);
     timerRSSI.start(1000);
 
-    reloj_seguridad.restart();
+    reloj_seguridad = std::chrono::system_clock::now();
     new_command.store(false);
     connect(&timerWatchdog, &QTimer::timeout, this, &SpecificWorker::controlParadaBase);
 //    timerWatchdog.start(2000);
@@ -222,7 +232,7 @@ void SpecificWorker::DifferentialRobot_setSpeedBase(float adv, float rot)  // mm
 	    std::cout << __FUNCTION__ << "Adv: " << adv << " Rot: (deg) " << rot << std::endl;
             robot->setVel(adv);
             robot->setRotVel(rot_);
-            reloj_seguridad.restart();
+            reloj_seguridad = std::chrono::system_clock::now();
         robot->unlock();
  //   }
     //else
@@ -416,11 +426,11 @@ void SpecificWorker::JoystickAdapter_sendData(RoboCompJoystickAdapter::TData dat
     // {
     //     if(a.name == "advance"){
     //         adv_speed = std::clamp(a.value, -1000.f, 1000.f);
-    //         //std::cout << "Advance" << std::endl;
+    //         std::cout << "Advance" << std::endl;
     //     }
     //     if(a.name == "turn"){
     //         rot_speed = std::clamp(a.value, -100.f, 100.f);
-	//     //std::cout << "Rotation: << std::endl;
+	//         std::cout << "Rotation:" << std::endl;
 	// }
         
     // }
@@ -440,7 +450,8 @@ void SpecificWorker::JoystickAdapter_sendData(RoboCompJoystickAdapter::TData dat
 
 void SpecificWorker::controlParadaBase()
 {
-    if(reloj_seguridad.elapsed() > 500)
+    auto duracion_ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - reloj_seguridad).count();
+    if(duracion_ms > 500)
     {
         robot->lock();
             robot->stop();

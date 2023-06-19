@@ -13,6 +13,8 @@ JoystickAdapterTopic.Endpoints=tcp -p 11232
 # This property is used by the clients to connect to IceStorm.
 TopicManager.Proxy=IceStorm/TopicManager:default -p 9999
 
+port=/dev/ttyUSB0
+
 InnerModelPath = innermodel.xml
 
 Ice.Warn.Connections=0

@@ -29,7 +29,7 @@
 
 #include <genericworker.h>
 #include </usr/local/Aria/include/Aria.h>
-#include <innermodel/innermodel.h>
+#include <chrono>
 
 
 class SpecificWorker : public GenericWorker
@@ -77,13 +77,14 @@ signals:
     void controlTime(bool);
 
 private:
-	std::shared_ptr < InnerModel > innerModel;
-	bool startup_check_flag;
+    bool startup_check_flag;
 
 	// Pioneer
     const float MAX_ADV = 1000.f;
     const float MAX_ROT = 30.f;
     bool ejecución=true;
+
+    string portRobot;
 
 	// Aria
     ArRobot *robot;
@@ -97,7 +98,7 @@ private:
     std::atomic<int> quality_rssi;
 
     //Watchdog
-    QTime reloj_seguridad;
+    std::chrono::system_clock::time_point reloj_seguridad;
     std::atomic<bool> new_command;
 
     //Ultrasound
